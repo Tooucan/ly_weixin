@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <title>员工应聘</title> 
+        <link rel="stylesheet" href="..//frozenui-1.3.0/css/frozen.css">
+        <link rel="stylesheet" href="..//css/ly-from.css">
+        <link rel="stylesheet" href="..//css/ly-header.css">
+        <script src="..//frozenui-1.3.0/lib/zepto.min.js"></script>
+        <script src="..//frozenui-1.3.0/js/frozen.js"></script>        
+        <script src="../jquery-2.1.4/jquery.js"></script>
+    </head>
+    <style type="text/css">
+        * {
+            margin:0;
+            padding:0;
+            list-style:none;
+        }
+        body {
+            font-size:14px;
+            background-color: #eee;
+        }
+
+        </style>
+
+    <body ontouchstart>
+     <header class="ui-header ui-header-positive ui-border-b">
+        <i class="ui-icon-return" onclick="history.back()"></i>
+        <h1>员工应聘</h1>        
+    </header> 
+    
+<section class="ui-container">
+    
+    <div class="ui-whitespace ly-form ui-form">
+                <form action="#">
+                    <div class="ly-form-item">
+                        <label>
+                            姓名
+                        </label>
+                        <input type="text" placeholder="填写您的姓名" />
+                        <a href="#" class="ui-icon-close"></a>                       
+                    </div>
+                    <div class="ly-form-item">
+                        <label>
+                            性别
+                        </label>
+                        <label class="ly-radio ui-radio" for="radio">
+                            <input class="ly-radio-item" type="radio" name="radio">
+                            <span>男</span>
+                        </label>
+                        <label class="ly-radio ui-radio" for="radio">
+                            <input class="ly-radio-item" type="radio" name="radio">
+                            <span>女</span>                            
+                        </label>
+                        
+                    </div>
+                    <div class="ly-form-item">
+                        <label>
+                            手机
+                        </label>
+                        <input type="text" placeholder="填写您的手机号" />
+                        <a href="#" class="ui-icon-close"></a>
+                    </div>
+                    <div class="ly-form-item">
+                        <label for="brithday">
+                            出生日期
+                        </label>
+                        <input type="date" id="brithday" placeholder="请输入您的出生日期，如1990-01-20">                      
+                    </div>  
+                    <div class="ly-form-item">
+                        <label>
+                            陪护经验
+                        </label>
+                        <div class="ui-select-group">
+                            <div class="ui-select ly-select-span">
+                                <select>
+                                    <option selected="">0</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                </select> 
+                                <span>年</span>  
+                            </div>
+                        </div>                        
+                    </div>                
+                    <div class="ly-form-item">
+                            <label>
+                                现住地址
+                            </label>
+                            <div class="ui-select-group ui-row-flex">
+                                <div class="ui-select ui-col">
+                                    <select>
+                                        <option>北京</option>
+                                        <option selected="">四川</option>
+                                        <option>上海</option>
+                                    </select>
+                                </div>
+                                <div class="ui-select ui-col">
+                                    <select>
+                                        <option>成都</option>
+                                        <option selected="">简阳</option>
+                                        <option>眉山</option>
+                                    </select>
+                                </div>
+                                <div class="ui-select ui-col">
+                                    <select>
+                                        <option>高新区</option>
+                                        <option selected="">武侯区</option>
+                                        <option>成华区</option>
+                                    </select>
+                                </div>
+                            </div>  
+                    </div>
+                    <div class="ly-form-item">
+                            <label>
+                                手机
+                            </label>
+                            <textarea type="textarea" rows="2" placeholder="楼栋、单元及门牌号等详细地址" ></textarea>
+                            <a href="#" class="ui-icon-close"></a>
+                    </div>
+                    <div class="ui-btn-wrap">
+                    <button class="ui-btn-lg disabled">
+                        提交申请
+                    </button>
+                    </div>
+                </form>
+    </div>
+
+</section><!-- /.ui-container-->
+ 
+</body>
+</html> 

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="..//frozenui-1.3.0/css/frozen.css">
+    <link rel="stylesheet" href="..//css/ly-nurse-list-item.css">
+    <link rel="stylesheet" href="..//css/ly-header.css">
+
+    <script src="..//frozenui-1.3.0/lib/zepto.min.js"></script>
+    <script src="..//frozenui-1.3.0/js/frozen.js"></script>        
+    <!-- <script src="../jquery-2.1.4/jquery.js"></script> -->
+
+	<title>评价</title>
+
+</head>
+<style>
+    .ly-nurse-info-data {
+        margin-top: 8px;
+
+    }
+    .ly-info-data {
+        width: 80px;
+    }
+    .ly-info-num {
+        display: block;
+        padding: 0 8px;
+        font-size: 1.4em;  
+    }
+    .ly-enumerative-units {
+        display: block;
+        padding: 0 8px;
+        font-size: 0.6em;
+        color: #888;
+    }
+/*星级评分*/
+    .ly-stars-rating {
+        display: block;
+        background-color: #fff; 
+        padding: 12px 32px;
+    }
+    .text-explain {
+        color: #333;
+        padding: 16px 0;
+        text-align: center;
+    }
+    /*评论框*/
+    .ly-com-box {
+        width: 100%;        
+        background-color: #fff;
+        padding: 48px 0;
+    }
+    .com-textarea {
+        display: block;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin: 0 auto;
+        width: 80%;
+        min-height: 80px;
+        padding: 12px;
+        font-size: 0.8em;
+        color: #333;
+    }
+    .com-textarea:focus {
+        border: 1px solid #666;
+    }
+
+</style>
+<body ontouchstart>
+	    
+     <header class="ui-header ui-header-positive ui-border-b">
+        <i class="ui-icon-return" onclick="history.back()"></i>
+        <h1>评价</h1>
+    </header>
+    <section id="ly-nurse-intro-wrap">
+        <div class="demo-item">        
+            <div class="demo-block">            
+                <ul class="ly-nurse-list ui-list  ui-border-tb">
+                    <li  class="ly-nurse-list-item ui-border-t">
+                        <div class="ly-nurse-avatar ui-avatar">
+                            <span style="background-image:url(..//img/profile-img-man.png)"></span>
+                        </div>
+                        <div class="ly-nurse-info ui-list-info ui-border-t">
+                            <h4 class="ly-nurse-name">罗老师
+                            <div class="ly-stars">
+                            <i class="ly-star"></i>
+                            <i class="ly-star"></i>
+                            <i class="ly-star"></i>
+                            <i class="ly-star"></i>
+                            </div>                        
+                            </h4>                      
+                            <div class="ly-nurse-info-data ">
+                                <div class="ly-info-data ui-border-l ui-col">
+                                    <span class="ly-info-num">33</span><span class="ly-enumerative-units ">单</span>
+                                </div>
+                                <div class="ly-info-data ui-border-l ui-col">
+                                    <span class="ly-info-num">3</span><span class="ly-enumerative-units ">锦旗</span>
+                                </div>
+                                <div class="ly-info-data ui-border-l ui-col">
+                                    <span class="ly-info-num">21</span><span class="ly-enumerative-units ">好评</span>
+                                </div>                            
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    </div>
+    </section>
+    <form name="input" action="#" method="get">
+        <section class="ly-stars-rating">
+            <div class="ui-flex ui-flex-pack-center">
+                <select id="example-css" name="rating">
+                    <option value=""></option> <!-- 初始为空 -->
+                    <option value="1" data-html=" 很不满意 " >服务质量太差，态度不友好</option>
+                    <option value="2" data-html=" 不满意 " >态度不友好，不够耐心</option>
+                    <option value="3" data-html=" 一般 " >服务质量还行，不爱说话</option>
+                    <option value="4" data-html=" 满意 " >服务很好，很耐心</option>
+                    <option value="5" data-html=" 非常满意 " >服务非常好，非常贴心</option>
+                </select>
+            </div>
+            <div class="text-explain" id="text-explain"> 
+                请对本次服务做出评价，谢谢！
+            </div>       
+        </section>
+        <section>
+            <div class="ly-com-box ui-border-t" >
+            <textarea class="com-textarea" name="comment" rows=5 cols=40  placeholder="请输入你的评价..." ></textarea>    
+            </div>
+        </section>
+        <section class="ui-footer">
+        <div class="ui-btn-wrap">
+        <button class="ui-btn-lg" type="submit" >
+        提交评价
+        </button>
+    </form>
+
+
+    <!-- 星级评分 -->   
+    <link rel="stylesheet" href="..//jquery-bar-rating/dist/themes/css-stars.css">
+    <script src="http://libs.useso.com/js/jquery/1.11.0/jquery.min.js" type="text/javascript"></script> 
+    <script>window.jQuery || document.write('<script src="..//jquery-bar-rating/js/jquery-1.11.0.min.js"><\/script>')</script>
+    <script src="..//jquery-bar-rating/js/jquery.barrating.js"></script>
+    <script src="..//jquery-bar-rating/js/examples.js"></script>
+    
+    <script>
+
+        $(document).ready(function(){         
+            //当被点击时获取option的text
+            $("#example-css").change(function(){
+                var checktext = $("#example-css option:selected").html();                              
+                //用获取的text替换text-explain中的内容
+                $("#text-explain").html(checktext);           
+            })
+
+        })
+
+    </script>
+
+
+</body>
+</html>

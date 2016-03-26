@@ -1,0 +1,53 @@
+﻿url_head:
+         http://ly-git-server:8080
+url:    
+         /api/android/{city}/hospital_care/service_provider/{ID}/info
+url_full:
+		http://ly-git-server:8080/api/android/{city}/hospital_care/service_provider/{ID}/info
+url说明: url中是service_provider，不是service_providers
+	    名称           含义               格式         其他说明
+	    city           所在城市           全英文        如chengdu，beijing
+	    ID             需要查看的员工ID   数字          
+方法:
+      GET
+
+param:
+		名称           含义            格式         其他说明
+		ver    	       app版本号       字符串       v1.0.3
+
+表单: application/x-www-form-urlencoded
+
+	    名称           含义            格式         其他说明
+	    null           null            null         null
+
+example:
+		GET
+		http://ly-git-server:8080/api/android/chengdu/hospital_care/service_provider/5/info?ver=v1.0.3  
+
+
+返回格式:
+	Content-Type : text/plain
+	UTF-8
+返回json格式：
+
+//
+服务器返回值：
+{
+	"status":"0",//"0/1"
+	"message":"succ",//描述错误原因
+	"service_provider_info":{
+		"id":"123456789",
+		"img_url":"/img/xxxxx.jpg",//全路径：http://ly-git-server:8080/img/xxxxx.jpg
+		"isbusy":"idle",//取值 idle/busy
+		"name":"",
+		"sex":"男",
+		"star_level":"4.2",
+		"native_place":"四川内江",
+		"age":"25",
+		"nursing_age":"12",
+		"total_orders":"123",
+		"pennant_number":"12",	
+		"comment_number":"456",								
+		"sketch":"简述",
+	}
+}

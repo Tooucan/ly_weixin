@@ -1,0 +1,50 @@
+﻿url_head:
+         http://ly-git-server:8080
+url:    
+         /api/android/{city}/hospital_care/service_provider/{ID}/skills
+url_full:
+		http://ly-git-server:8080/api/android/{city}/hospital_care/service_provider/{ID}/skills
+url说明: url中是service_provider，不是service_providers
+	    名称           含义               格式         其他说明
+	    city           所在城市           全英文        如chengdu，beijing
+	    ID             需要查看的员工ID   数字          
+方法:
+      GET
+
+param:
+		名称           含义            格式         其他说明
+		ver    	       app版本号       字符串       v1.0.3
+
+表单: application/x-www-form-urlencoded
+
+	    名称           含义            格式         其他说明
+	    null           null            null         null
+
+example:
+		GET
+		http://ly-git-server:8080/api/android/chengdu/hospital_care/service_provider/5/skills?ver=v1.0.3  
+
+
+返回格式:
+	Content-Type : text/plain
+	UTF-8
+返回json格式：
+
+//
+服务器返回值：
+{
+	"status":"0",//"0/非0"
+	"message":"succ",//描述错误原因
+	"service_provider_skills":[{
+			"id":"12",
+			"name":"骨科护理",			
+			"typename":"普通",//技能种类
+
+		},
+		{
+			"id":"13",
+			"name":"鼻饲护理",
+			"typename":"普通",//技能种类			
+		}			
+	]
+}

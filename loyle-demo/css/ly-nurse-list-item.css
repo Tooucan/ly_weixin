@@ -1,0 +1,60 @@
+       #ly-nurse-list-wrap {
+        margin-top: 18px;
+       }
+
+        /*护理员列表*/
+        .ly-nurse-list {
+            margin-top: 0;
+        }
+        .ly-nurse-list a {
+            color: #333;
+        }
+        .ly-nurse-list-item {
+            padding: 12px 0;
+        }
+        /*star 样式*/
+        .ly-stars {
+            display: inline-block;
+            margin: 0 4px;
+        }
+        .ly-star {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-image: url(..//img/iconfont-star.png);
+            background-size: cover;
+
+        }
+        /*订单数*/
+
+        .num-orders {
+            color: #bbb;            
+        }
+        /*价格*/
+
+        .ly-nurse-info {
+            position: relative;
+            display: inline-block;
+        }
+
+        .ly-price {
+            display: block;
+            width: 80px;
+            height: 40px;
+            line-height: 40px;
+            text-align: right;            
+            position: absolute;
+            right: 10px;
+            top: 15px;
+        }
+        .ly-price-num {
+            font-size: 1.2em;
+        }
+        /*护理员信息*/
+
+        .ly-nurse-brief-info,
+        .ly-nurse-info p {
+            font-size: 12px;
+            margin: 4px 0;
+            width: 248px;           
+        }

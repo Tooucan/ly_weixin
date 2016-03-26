@@ -1,0 +1,83 @@
+       .ly-bg-white {
+        background-color: #fff;
+       }
+       .ly-title {
+        padding: 12px 0 4px;
+        font-weight: 600;
+       }
+       .ly-title span {        
+        font-weight: 300;
+       }
+       .ly-padding-b {
+        padding-bottom: 20px;
+        }
+       .ly-padding-t {
+        padding-top: 20px;
+        }
+       .ly-list li {
+        padding: 24px 0;
+       }
+       .ly-list-title {
+        font-weight: 600;
+       }
+       /* nowrap文本默认显示3行 */
+       .ui-nowrap-multi {
+        -webkit-line-clamp: 3;
+       }
+       .ui-list > li {
+        margin-left: 0;
+        padding-right: 0;
+       }
+       .ly-intro-i {
+        content: "";    
+        display: inline-block;  
+        width: 8px;
+        height: 8px;
+        margin-left: 6px;
+        background-image: url(..//img/ic_text_unflod.png);
+        background-size: cover;
+        position: absolute;
+        bottom: 2px;
+        right: 0;        
+       }
+
+      /*支付方式*/
+      .ly-radio input:before {
+        width: 24px;
+        height: 24px;
+        border-radius: 16px
+       }
+       .ly-radio input:checked:after {
+        width: 26px;
+        height: 26px;
+        border-radius: 16px;
+        background-image: url(..//img/ic_pay_radio_checked.png); 
+        background-size: cover;
+        background-color: #fff;              
+        left: 0;
+        top: 0;
+        box-shadow: 0 0 0 3px rgba(100, 189, 99, 0.2);
+       }
+       .ly-pay {
+        font-size: 16px;
+        line-height: 56px;
+        padding: 0 15px;
+        display: -webkit-box;
+        background: #fff;
+        vertical-align: middle;
+        -webkit-box-pack: start;
+       }
+       .ly-pay h1 {
+        display: inline-block;
+        font-size: 24px;
+       }
+       .ly-pay-btn {
+        background-color: #64BD63;
+        color: #fff;        
+        font-size: 21px;
+        line-height: 56px;        
+        padding: 0 15px;
+        display: -webkit-box;
+        vertical-align: middle;
+        -webkit-box-pack: center;
+       }

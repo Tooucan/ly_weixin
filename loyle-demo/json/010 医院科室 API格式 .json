@@ -1,0 +1,108 @@
+
+url_head:
+         http://ly-git-server:8080
+url:    
+         a. 查询所有科室（该项有效）：                  
+         	/api/android/{city}/hospital/{hosid}/departments
+         b. 查询科室的所有分类（暂时不开放）：            
+         	/api/android/{city}/hospital/{hosid}/department/categorys
+         c. 查询某一分类下的所有科室（暂时不开放）：
+         	/api/android/{city}/hospital/{hosid}/category/{categoryid}/departments
+
+url_full:
+		http://ly-git-server:8080/api/android/{city}/hospital/{hosid}/departments
+		http://ly-git-server:8080/api/android/{city}/hospital/{hosid}/department/categorys
+		http://ly-git-server:8080/api/android/{city}/hospital/{hosid}/category/{categoryid}/departments
+
+url说明:
+	    名称           含义               格式         其他说明
+	    city           所在城市           全英文        如chengdu，beijing
+	    hosid          医院ID             数字          
+	    categoryid     分类ID             数字          
+
+方法:
+      GET    
+
+param:
+		名称   含义            格式         其他说明
+		ver    app版本号       字符串       v1.0.3
+
+表单: 无
+
+example:
+		GET
+        http://ly-git-server:8080/api/android/chengdu/hospital/32/departments?ver=v1.0.3
+		http://ly-git-server:8080/api/android/chengdu/hospital/32/department/categorys?ver=v1.0.3
+		http://ly-git-server:8080/api/android/chengdu/hospital/32/category/1/departments?ver=v1.0.3
+
+返回格式:
+	Content-Type : text/plain
+	UTF-8
+
+
+a. 查询所有科室（该项有效）：                  
+	/api/android/{city}/hospital/{hosid}/departments
+返回json格式：
+		{
+			"status":"0",//"0/非零" 0:成功，其他:失败
+	        "message":"succ",//描述错误原因
+	        "departments":[
+	        	{
+	        		"id": "1",//科室编号
+	        		"category_id":"2",
+	        		"category_name":"内科",
+                    "department_name": "消化内科",//科室名称
+	        	},
+	        	{
+	        		"id": "2",
+	        		"category_id":"2",
+	        		"category_name":"外科",
+                    "department_name": "神经外科",//科室名称
+	        	},
+	        ]
+		}
+
+
+
+b. 查询科室的所有分类（暂时不开放）：            
+    /api/android/{city}/hospital/{hosid}/department/categorys
+    返回json格式：
+		{
+			"status":"0",//"0/非零" 0:成功，其他:失败
+	        "message":"succ",//描述错误原因
+	        "categorys":[
+	        	{
+	        		"category_id":"1",
+	        		"category_name":"内科",
+	        	},
+	        	{
+	        		"category_id":"2",
+	        		"category_name":"外科",
+	        	},
+	        ]
+		}
+
+
+c. 查询某一分类下的所有科室（暂时不开放）：
+	/api/android/{city}/hospital/{hosid}/category/{categoryid}/departments
+返回json格式：
+		{
+			"status":"0",//"0/非零" 0:成功，其他:失败
+	        "message":"succ",//描述错误原因
+	        "departments":[
+	        	{
+	        		"id": "1",//科室编号
+	        		"category_id":"2",
+	        		"category_name":"内科",
+                    "department_name": "消化内科",//科室名称
+	        	},
+	        	{
+	        		"id": "2",
+	        		"category_id":"2",
+	        		"category_name":"外科",
+                    "department_name": "神经外科",//科室名称
+	        	},
+	        ]
+		}		
+
+

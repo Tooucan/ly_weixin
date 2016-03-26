@@ -1,0 +1,54 @@
+﻿url_head:
+         http://ly-git-server:8080
+url:    
+         /api/android/{city}/hospital_care/service_provider/{ID}/evaluation/comments/{page}
+url_full:
+		http://ly-git-server:8080/api/android/{city}/hospital_care/service_provider/{ID}/evaluation/comments/{page}
+url说明:
+	    名称           含义               格式         其他说明
+	    city           所在城市           全英文        如chengdu，beijing
+	    ID             需要查看的员工ID   数字          
+	    page           请求的页面         nn            page从1开始
+
+方法:
+      GET
+
+param:
+		名称           含义            格式         其他说明
+		ver    	       app版本号       字符串       v1.0.3
+
+表单: 无
+
+example:
+		GET
+		http://ly-git-server:8080/api/android/chengdu/hospital_care/service_provider/5/evaluation/comments/1?ver=v1.0.3  
+
+返回格式:
+	Content-Type : text/plain
+	UTF-8
+返回json格式：
+
+
+//
+服务器返回值：
+{
+	"status":"0",//"0/非0"
+	"message":"succ",//描述错误原因
+	"page": {
+			"count":10,       //每页记录条数        		
+        	"curr":1,         //本页页码  	        	
+        	"totalcount": 199, //总记录数
+			"totalpage": 20,  //总页数              	
+    	},
+	"comments":[
+		{
+			"id":"123456789",
+			"type":"首次",//首次，追加
+			"star_level":"2.0",
+			"customer_phone":"123****8910",
+			"comment_words":"服务一般般",
+			"service_name":"日间",
+			"comment_time":"2016-03-09 10:25:00",
+		},
+	]
+}

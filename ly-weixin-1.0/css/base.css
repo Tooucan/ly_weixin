@@ -1,0 +1,64 @@
+/* 初始化 */
+* {
+margin:0;
+padding:0;
+list-style:none;
+}
+body {
+font-size:14px;
+color: #444;
+background-color: #eee;                          
+}
+
+/* 查看更多 */
+.viewMore {
+margin: 10px auto;                
+width: 50%;
+border: 1px solid #eee;
+height: 40px;
+line-height: 40px;
+border-radius: 50px;
+text-align: center;
+color: #999;
+background-color: #FFF;             
+}
+.viewMore:active{
+color: #666;
+border-color: #ccc;
+}
+.viewMore p {
+display: inline-block;
+}
+.viewMore i {
+width: 16px;
+height: 16px;
+display: inline-block;
+background: url(../img/loading_sprite.png);
+-webkit-background-size: cover;
+-webkit-animation: am-rotate 1s steps(15) infinite;
+margin-right: 6px;
+line-height: 40px;
+margin-bottom: -2px;
+}
+/*空数据占位*/
+.data-error {
+width: 100%;
+line-height: 5em;
+text-align: center;
+}
+
+/*回到顶部*/
+#back-to-top {
+display: none;
+width: 40px;
+height: 40px;
+background: url(../img/ic_pull.png) center center no-repeat;
+background-color: rgba(238, 238, 238, 1);
+background-size: 50% 50%;
+position: fixed;
+right: 12px;
+bottom: 24px;
+border-radius: 40px;
+}
+
+

@@ -1,0 +1,19 @@
+/* 提交表单后的弹窗 */
+.ly-intro-m {
+    font-size: 13px;
+    line-height: 2.4em;
+    color: #a6a6a6;
+    padding: 4px 20px;
+    width: 80%;
+}
+.ly-intro-l {
+    font-size: 15px;
+    line-height: 2em;
+    color: #a6a6a6;
+}
+.ly-intro-center {
+    text-align: center;
+}
+.ly-red {
+    color: #e2574d;
+}

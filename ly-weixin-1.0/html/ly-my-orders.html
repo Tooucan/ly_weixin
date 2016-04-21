@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <title>我的订单</title> 
+        <link rel="stylesheet" href="../css/frozen.css">
+        <link rel="stylesheet" href="../css/ly-order-list-item.css">
+        <link rel="stylesheet" href="../css/ly-header.css">
+        <link rel="stylesheet" href="../css/base.css">
+        <script src="../js/zepto.min.js"></script>
+	    <script src="../js/frozen.js"></script>        
+	    <script src="../js/jquery.min.js"></script>
+	    <script src="../js/base.js"></script>
+    </head>
+    <body ontouchstart>
+<!--      <header class="ui-header ui-header-positive ui-border-b">
+   <i class="ui-icon-return" onclick="history.back()"></i>
+   <h1>我的订单</h1>
+    </header> -->
+<section class="ui-container">
+
+<section id="ly-order-list-wrap">
+    <div class="demo-item">        
+        <div class="demo-block">            
+            <ul class="ly-order-list ui-list  ui-border-tb">
+            </ul>
+            <div class="viewMore" onclick="viewMore()"><i class="ui-loading" style="display: none;"></i><p>查看更多</p></div>
+
+        </div>
+    </div>
+</section> 
+
+</section><!-- /.ui-container-->
+<script type="text/javascript">
+    var page = 0;
+    var t_len;
+    contentList();//加载第一页
+    function contentList(){
+        page++;
+        //get订单列表data
+        $.ajax({
+            url: url_hostName+"/api/weixin/chengdu/user/my_orders/list/"+ page +"?ver=v1.0.3",
+            type: "POST",
+            data: {
+                token        : '44B03F38143B4407901D69E96524FEC9',
+                user_uuid_type : 'IMEI',
+                user_uuid    : '123456789101112',
+            },
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            success: function(data) {
+            var tt = eval(data).orders;
+            t_len = tt.length;            
+            if  (tt.length !== 0) { 
+            //循环ul下的li，并填写数据            
+                for (var i = 0; i < tt.length ; i++) {
+                    var loc_url,ly_state;
+                    var o_code = tt[i].order_status_code;                    	
+                       //跳转链接
+                       if (o_code == 13 || o_code == 14 || o_code == 15 || o_code == 16) {
+                       	tt[i].order_status_name = "去评价";
+                        loc_url = "ly-evaluate.html?code="+tt[i].code+"&id="+ tt[i].sp_id+"";
+                       } else {
+                        loc_url = "ly-order-details.html?code="+tt[i].code+"";
+                       };
+                       //判断状态                       
+                       switch (o_code){
+                       	
+                        case "1":
+                            ly_state = "ly-state-green";
+                            break;
+                        case "2":
+                            ly_state = "ly-state-green";
+                            break;
+                        case "3":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "4":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "5":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "6":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "7":
+                            ly_state = "ly-state-green";
+                            break;
+                        case "8":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case '9':
+                            ly_state = "ly-state-yellow";
+                            break;
+                        case '10':
+                            ly_state = "ly-state-red";
+                            break;
+                        case '11':
+                            ly_state = "ly-state-red";
+                            break;
+                        case '12':
+                            ly_state = "ly-state-gray";
+                            break;
+                        case '13':
+                            ly_state = "ly-state-button";
+                            break;
+                        case '14':
+                            ly_state = "ly-state-button";
+                            break;
+                        case '15':
+                            ly_state = "ly-state-button";
+                            break; 
+                        case '16':
+                            ly_state = "ly-state-button";
+                            break;
+                        case '17':
+                            ly_state = "ly-state-gray";
+                            break;
+                        case '100':
+                        	ly_state = "ly-state-red";
+                            $(".ly-order-state").text("错误订单");
+                            break;
+                       };                        
+
+                    $(".ly-order-list").append( 
+                            "<li  class='ly-order-list-item ui-border-t' onclick='javascript:document.getElementById('ly-order-link').click();'>"
+                            +
+                            "<a class='ly-order-link' id='ly-order-link' href='ly-order-details.html?code="+tt[i].code+"'>"
+                            +
+                            "<div class='ly-nurse-avatar ui-avatar-lg'>"
+                            +
+                            "<span style='background-image:url(" + url_hostName + "/"  + tt[i].img_url + ")'></span>"
+                            +
+                            "</div>"
+                            +
+                            "<div class='ly-order-info ui-list-info'>"
+                            +
+                            "<h4 class='ly-nurse-name'>" + tt[i].sp_name 
+                            +
+                            "<div class='ly-order-type' name='" + tt[i].service_name + "'>"
+                            +
+                            "<i class='ly-day'></i>"
+                            +
+                            "<i class='ly-night'></i>"
+                            +
+                            "</div>"
+                            +                            
+                            "</h4>"
+                            +                    
+                            "<span class='ly-order-info'><span>" + tt[i].category_name + "</span><span class='ly-order-day'>￥" + tt[i].unit_price + " " + tt[i].unit + " X " + tt[i].date_num + "</span></span>"
+                            +
+                            "<p class='ly-order-time'>" + tt[i].create_time + "</p>"
+                            +
+                            "</div>"
+                            +                        
+                            "<a href='" + loc_url + "' class='ly-order-state "+ ly_state +"'>" + tt[i].order_status_name + "</a>"
+                            +
+                            "</a>"
+                            +
+                            "</li>"
+                            );                          
+                            
+                        }
+                        $(".viewMore i").hide();//隐藏加载动画
+                    }                    
+                    else {
+                        if (page == 1) {
+                            $(".ly-order-list").empty();//清空  
+                            $(".ly-order-list").append("<p class='data-error ui-placehold'>还没有任何订单！</p>"); 
+                        };                  
+                    }
+                }, 
+            error: function() {
+                   alert ("链接错误！")
+                } 
+            });    
+    };
+</script>
+ 
+</body>
+</html> 

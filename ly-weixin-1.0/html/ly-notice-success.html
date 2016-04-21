@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <title>预约成功</title>  
+        <link rel="stylesheet" href="../css/frozen.css">
+        <link rel="stylesheet" href="../css/ly-header.css">      
+        <script src="../js/zepto.min.js"></script>
+        <script src="../js/frozen.js"></script>        
+        <script src="../js/jquery.min.js"></script>
+    </head>
+<style type="text/css">
+	.ly-success-icon {
+		display: block;
+		width: 120px;
+		height: 120px;
+        margin: 80px 0 10px 0;
+		background:url(..//img/ic_tips_success.png)  no-repeat;
+        background-size: cover;
+	}
+    .ly-notice {
+        -webkit-box-pack: start;
+        background: #fff;
+    }
+    .ly-notice p {
+        line-height: 1.6em;
+        color: #666;
+    }
+    .ly-txt-success {
+        display: block;
+        width: 80%;
+        font-size: 2em;
+        line-height: 2em;
+        color: #666;
+        margin-bottom: 0.6em;        
+    }
+    .ly-call {
+        display: inline-block;
+        width: 48px;
+        height: 48px;
+        background: url(..//img/ic-phonecall.png) center center no-repeat;
+        background-size: 32px 32px;
+        margin-bottom: -16px;
+    }
+    .ly-btn-call-green{
+        height: 48px;
+        line-height: 48px;
+        width: 80%;
+        font-size: 18px;
+        background-color: #11cd6e;
+        border: 0;
+        background-image: none;
+        margin: 0 auto;    
+    }
+    .ui-notice-btn span {
+        color: #999;
+        font-size: 0.8em;
+    }
+    .ui-notice-btn button {
+        margin:10px auto;
+    }
+    #href_order {
+        display: block;
+        width: 96px;
+        height: 28px;
+        line-height: 28px;
+        color: #777;
+        font-size: 13px;
+        background-color: #f6f6f6;       
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+
+</style>
+<body ontouchstart>
+<!--      <header class="ui-header ui-header-positive ui-border-b">
+        <i class="ui-icon-return" onclick="history.back()"></i>
+        <h1>预约成功</h1>        
+    </header> -->
+    <section id="notice">
+    <div class="demo-item">
+        <div class="demo-block">
+            <section class="ly-notice ui-notice">
+                <div class="ly-success-icon"></div>
+                <h1 class="ly-txt-success ui-border-b">预约成功</h1>
+                <p>我们将与您联系确认，并安排护理员</p>
+                <p>订单超过2小时未确认将会自动取消</p>
+                <a href="ly-my-orders.html" id="href_order">>查看我的订单</a>
+                <div class="ui-notice-btn">
+                    <span>您也可以拨打客服电话确认订单</span>
+                     <a class="ly-btn-call-green ui-btn-primary ui-btn-lg" href="tel:4000-888-691" ><i class="ly-call"></i>客服电话：4000-888-691</a>
+                </div>
+            </section>
+        </div>
+    </div>
+</section> 
+
+
+</body>
+</html>

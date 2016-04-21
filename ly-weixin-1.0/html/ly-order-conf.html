@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <title>预约护理员</title> 
+        <link rel="stylesheet" href="../css/kalendae.css">
+        <link rel="stylesheet" href="../css/frozen.css"> 
+        <link rel="stylesheet" href="../css/ly-order-conf.css">
+        <link rel="stylesheet" href="../css/ly-from.css">
+
+        <link rel="stylesheet" href="../css/ly-modal.css">
+        <link rel="stylesheet" href="../css/ly-header.css">
+        <script src="../js/zepto.min.js"></script>
+        <script src="../js/frozen.js"></script>        
+        <script src="../js/jquery.min.js"></script>
+        <script src="../js/base.js"></script>
+        <script src="../js/jquery.rotate.min.js"></script>
+        <script src="../js/kalendae.standalone.js" charset="utf-8"></script>
+        
+    </head>
+
+    <body ontouchstart>
+<!--      <header class="ui-header ui-header-positive ui-border-b">
+   <i class="ui-icon-return" onclick="history.back()"></i>
+   <h1>预约护理员</h1>        
+    </header>  -->
+<form id="orderForm" name="orderForm" action="" onsubmit="return validateForm()" method="post">
+<section class="ui-container">
+    <div class="ui-panel ui-whitespace ly-bg-white ly-padding-b">
+        <label><h4 class="ly-title ui-border-b">服务地址及联系人</h4></label>
+        <div class="ly-form ui-form">
+                
+                    <div class="ly-form-item">
+                        <label>
+                            医院名称
+                        </label>
+                        <input class="ly-sel-hospital disabled" type="text" placeholder="请填写您所在的医院" name="hospital" value="当前医院"  readonly="true"/>                                              
+                    </div>                  
+                    <div class="ly-form-item">
+                        <label>
+                            联系人姓名
+                        </label>
+                        <input type="text" name="contactsName" maxlength="4" onkeypress="(this.v=function(){this.value=this.value.replace(/[^\u4E00-\u9FA5]/g,'');}).call(this)" onblur="this.v()" placeholder="请输入您的名字,最多4个汉字" />
+                        <a class="ui-icon-close" onclick="clearInput($(this))"></a>
+                    </div>                    
+                    <div class="ly-form-item">
+                        <label>
+                            科室床位
+                        </label>
+                        <div class="ui-select-group ui-row-flex">
+                            <div class="ui-select ui-col">
+                                <select name="deptName" class="ly-deptName">
+                                    <option>骨科</option>
+                                    <option>妇科</option>
+                                    <option>儿科</option>
+                                </select>
+                            </div>
+                            <div class="ui-select ui-col">
+                                <select name="bedNo" class="ly-bedNo">
+                                    <option>1床</option>
+                                    <option>2床</option>
+                                    <option>3床</option>
+                                    <option>4床</option>
+                                    <option>5床</option>
+                                    <option>6床</option>
+                                    <option>7床</option>
+                                </select>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="ly-form-item">
+                        <label>
+                            手机
+                        </label>
+                        <input type="telephone" name="contactsPhone" maxlength="11" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v()" placeholder="请填写您的11位手机号" />
+                        <a  class="ui-icon-close" onclick="clearInput($(this))"></a>
+                    </div>     
+                    <div class="ly-form-item">
+                            <label>
+                                备注
+                            </label>
+                            <textarea type="textarea" name="userMeno" rows="1" placeholder="特殊要求请备注..." onkeyup="addRows(this)"></textarea>    
+                             <a class="ui-icon-close" onclick="clearInput($(this))"></a>
+                    </div>
+                     
+            </div>
+        </div>
+    </section>
+    <section class="ui-panel ui-border-b">
+        <div class="ui-whitespace ly-bg-white ly-padding-b">
+            <label><h4 class="ly-title ui-border-b">服务时间</h4></label>
+            <div class="ly-service-flow">   
+                <div class="ly-intro ly-padding-t">   
+                   <div id="ly-date" name="ly-date"></div>               
+                    <h4>共选择 <span class=" ly-selcetedDays ui-txt-red">0</span> 天</h4>
+                    <p class="ui-txt-info ui-nowrap-multi">
+                        注意：客户下单当日，任何时间段下单，计费军算一天；订单结束日，若于12:00之前结束按半天算，12:00之后按一天计算。
+                    </p>                    
+                </div>
+            </div> 
+        </div>
+    </section>
+    <section class="ui-panel ui-border-b">
+        <ul class="ui-whitespace ui-list ui-list-one ui-list-link ui-border-tb">
+            <li>
+            <label class="ui-list-info">
+            <h4 class="ly-list-title">结算</h4>
+            <h5 class="ui-txt-info"><span id="ly-nurse-price">150</span>元/天 X <span class="ly-selcetedDays">0</span> 天= </h5>
+            <h3 class="ui-txt-red"><span class="ly-statements">0</span>元</h3>
+            </label>
+            </li>
+        </ul>
+    </section>
+    <section class="ui-panel ui-border-b">
+        <div name="ly-pay" class="ui-whitespace ly-bg-white ly-padding-b">
+            <label><h4 class="ly-title ui-border-b">支付方式</h4></label>
+            <ul class="ly-list ui-list ui-list-text ui-list-radio ">
+                <li class="ui-border-b"  style="display: none">
+                    <div class="ui-list-thumb">
+                        <span style="background-image:url(..//img/ic_pay_weixin.png)"></span>
+                    </div>                                      
+                    <h4 class="ly-pay-weixin">微信支付 <span class="ui-txt-info ui-txt-red" style="font-size:12px;"> 开发中···</span></h4>
+                    <label class="ly-radio ui-radio" for="radio">
+                        <input type="radio" name="pay" disabled="disabled" value="wechat_payment">
+                    </label>    
+                </li>
+                <li class="ui-border-b" style="display: none">
+                    <div class="ui-list-thumb">
+                        <span style="background-image:url(..//img/ic_pay_zhifubao.png)"></span>
+                    </div>                                      
+                    <h4 class="ly-pay-alipay">支付宝</h4>
+                    <label class="ly-radio ui-radio" for="radio">
+                        <input type="radio" name="pay" value="alipay">
+                    </label>    
+                </li>
+                <li class="ui-border-b">
+                    <div class="ui-list-thumb">
+                        <span style="background-image:url(..//img/ic_pay_xianjin.png)"></span>
+                    </div>                                      
+                    <h4 class="ly-pay-service">现金支付 <span class="ui-txt-info" style="font-size:12px;"> 服务时支付</span></h4>
+                    <label class="ly-radio ui-radio" for="radio">
+                        <input type="radio" name="pay" value="service_payment" checked="checked">
+                    </label>    
+                </li>
+            </ul>
+        </div>
+          <!-- 存放需要上传的其他数据  -->
+        <div class="ly-other-data">              
+            <input type="hidden" id="token" name="token"  value="" />
+            <input type="hidden" id="user_uuid_type" name="user_uuid_type"  value="" />
+            <input type="hidden" id="user_uuid" name="user_uuid"  value="" />
+            <input type="hidden" id="hospitalId" name="hospitalId"  value="" />
+            <input type="hidden" id="serviceId" name="serviceId"  value="" />
+            <input type="hidden" id="deptId" name="deptId"  value="" />
+            <input type="hidden" id="totalPayment" name="totalPayment"  value="" />
+            <input type="hidden" id="selectedDays" name="dates"  value="" />
+        </div>
+        </form>
+        <div class="ly-modal ui-dialog">
+                <div class="ui-dialog-cnt">
+                     <i class="ui-dialog-close" data-role="button"></i>
+                    <div class="ui-dialog-bd">
+                        <h4>订单详细</h4>
+                        <div class="ly-intro-m">
+
+                        联系人：<span id="user"></span><br/>
+                        电话：<span id="tel"></span><br/>
+                        医院：<span id="hos"></span><br/>
+                        科室床位：<span id="deptName"></span> - <span id="bedNo"></span>床<br/>
+                        备注：<span id="userMeno"></span><br/>
+                        总服务时间：<span id="days"></span>天<br/>
+                        总费用：<span id="price" class="ly-red"></span><br/>
+
+                        </div>
+                    </div>
+                    <div class="ui-dialog-ft">                        
+                        <button type="button" data-role="button">确认提交</button>
+                    </div>
+                </div>        
+            </div>            
+    </section>
+    <footer class="ui-footer ui-footer-btn ui-border-t">
+            <div class="ui-row-flex">
+                <div class="ly-pay ui-col ui-col-2 ui-txt-red"><span class="ui-txt-info">实际支付：</span><h1>￥<span class="ly-statements">0</span> </h1><span> 元</span></div>
+                <a href="#"  class="ui-col ly-pay-btn" onClick="validateForm()">提交预约</a>
+            </div>
+    </footer>
+</section><!-- /.ui-container-->
+    <script type="text/javascript">
+
+    //正则分析法 获取url参数
+    function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+    var r = window.location.search.substr(1).match(reg);//获取当前页面url中？后面的字段
+    if (r!=null) return (r[2]); return null;
+    }
+    var id = GetQueryString("id");
+    var hospitalId = GetQueryString("hospitalId");
+    var serviceId = GetQueryString("serviceId");
+    var price = GetQueryString("price");
+    var hospitalName = unescape(GetQueryString("hospitalName"));
+    //填入价格
+    $("#ly-nurse-price").html(price);
+    //填入默认医院
+    $(".ly-sel-hospital").val(hospitalName);
+    //填入科室
+    $.ajax({
+        url:url_hostName+"/api/weixin/chengdu/hospital/"+ hospitalId +"/departments?ver=v1.0.3",
+        type: "GET",
+        dataType: "json",        
+        success: function(data) {
+        var tt = eval(data).departments;         
+        if (tt.length !== 0) {
+            $(".ly-deptName").empty();
+            for (var i = tt.length - 1; i >= 0; i--) {              
+                $(".ly-deptName").append("<option id="+ tt[i].id +" value="+ tt[i].department_name +">"+ tt[i].department_name +"</option>")
+            }
+        }
+        else 
+            {alert("没找到数据！")};
+        }
+    });
+    //填入床位
+    bedNo();
+    function bedNo(){        
+        tt= 100;
+        if (tt.length !== 0) {                
+                $(".ly-bedNo").empty();
+                for (var i = 1;i < tt;  i++) {              
+                    $(".ly-bedNo").append("<option value=" +i+ ">"+ i +" 床</option>")
+                }
+            }
+            else 
+                {alert("没找到数据！")};
+    }    
+    </script>
+    <!-- 日历排期 -->
+
+    <script type="text/javascript" charset="utf-8">
+    var r_data=[];
+    var afterDays_max;
+        $.ajax({
+        url:url_hostName+"/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/schedule_info?ver=v1.0.3",
+        type: "POST",
+        async: false,//设为同步才可给全局变量赋值
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",  
+        success: function (data) {
+                 r_data = eval(data);
+             }
+    }); 
+        //把已约的日期放入数组中
+        var closedDate =[];
+        var r_day = r_data.reserved_day;
+        afterDays_max = r_data.server_info.after_days_max;
+        console.log(afterDays_max)
+        for (var i = r_day.length - 1; i >= 0; i--) {
+            closedDate[i] =r_day[i].date;
+            };    
+        
+         //给已约的日期添加class
+        var classMap = [] ;
+            for (var i = closedDate.length - 1; i >= 0; i-- ) {
+                if (closedDate[i] > Kalendae.moment().format("YYYY-MM-DD") &&  closedDate[i] < Kalendae.moment().add("d",afterDays_max).format("YYYY-MM-DD")) {//判断已约日期是否在可选氛围内
+                classMap[closedDate[i]] = 'closed';
+                }                
+            };   
+         //kalendae配置
+        var selcetedDays = [];
+        new Kalendae({
+            attachTo: "ly-date",//把日历置入#ly-date
+            direction: 'today-future',
+            months:1,
+            mode:'multiple',
+            useYearNav: false,
+            dayOutOfMonthClickable: false,
+            subscribe: {
+                       'change': function (date) {
+                            selcetedDays = this.getSelectedRaw();                            
+                        }
+                    },               
+            dateClassMap: classMap,
+            blackout: function (date) {  
+                    var today = Kalendae.moment().format("YYYY-MM-DD");
+                    var allDay = Kalendae.moment(date).format("YYYY-MM-DD");
+                    var afterDays = Kalendae.moment().add("d",afterDays_max).format("YYYY-MM-DD");
+                     //设置classMap下的日期不可点击 
+                    for (var i = 0; i < closedDate.length ;  i++) {
+                                if(allDay == closedDate[i]){
+                                return true;
+                                }
+                    };
+                    return allDay < afterDays && allDay >= today ? false : true ; //限定未来15天可选
+               }
+            });
+    
+    //获取被选中的日期数量      
+   $('#ly-date').click(function(){
+        $('.ly-selcetedDays').html(selcetedDays.length);
+        $('.ly-statements').html(price*selcetedDays.length);
+    });
+   //替换文字 
+    setInterval("refresh_replace()",100);//100ms重复一次
+
+        function refresh_replace(){            
+            $(".k-today").addClass("closed");
+            $(".closed").text("已约");
+            $(".k-today").text("今天");
+        };
+    //点击out-of-month 跳转下一个月   
+ /*   $('.k-out-of-month').click(function(){
+        $('.k-btn-next-month').attr('id',"test");
+        document.getElementById("test").click()
+    })*/
+
+    
+    </script>
+    <script type="text/javascript" charset="utf-8"> 
+        //清空当前input
+        function clearInput(obj){            
+            obj.prev().val("");
+        };
+        //textarea按回车增加行
+        function addRows(obj,e){            
+            var ev = e||event;
+            if (ev.keyCode == 13 || ev.keyCode == 100 ) {
+                obj.rows+=1;
+            };
+        };
+        //提交订单
+        function validateForm(){   
+            var contactsName_v = document.orderForm.contactsName.value;
+            var contactsPhone_v = document.orderForm.contactsPhone.value;
+            var userMeno_v = document.orderForm.userMeno.value;
+            var deptName_v = document.orderForm.deptName.value;
+            var bedNo_v = document.orderForm.bedNo.value;
+            var pay_v = document.orderForm.pay.value; 
+            var deptId = $(".ly-deptName").find("option:checked").attr("id");
+            var phone = /^0?1[3|4|5|8][0-9]\d{8}$/;//验证手机号 
+
+            if (contactsName_v!=="" && contactsPhone_v!=="" && phone.test(contactsPhone_v) && pay_v!=="" && selcetedDays.length !== 0){
+                //弹出信息
+                $(".ui-dialog").addClass("show");
+                //填入订单详细数据
+                $("#user").html(contactsName_v);
+                $("#tel").html(contactsPhone_v);
+                $("#hos").html(hospitalName);
+                $("#deptName").html(deptName_v);
+                $("#bedNo").html(bedNo_v);
+                $("#userMeno").html(userMeno_v);
+                $("#days").html(selcetedDays.length);
+                $("#price").html(price*selcetedDays.length+"元");
+
+                //填入其他数据
+                $("#token").val("44B03F38143B4407901D69E96524FEC9");
+                $("#user_uuid_type").val("IMEI");
+                $("#user_uuid").val("123456789101112");
+                $("#hospitalId").val(hospitalId);
+                $("#serviceId").val(serviceId);
+                $("#deptId").val(deptId);
+                $("#totalPayment").val(price*selcetedDays.length);
+
+            }
+            else if (contactsName_v == "" && contactsPhone_v== "" ){
+                alert("请填写您的姓名和电话等，谢谢！");
+                document.orderForm.contactsName.focus();
+                return false;
+            }
+            else if (contactsName_v == ""){
+                alert("请填写您的姓名！");
+                document.orderForm.contactsName.focus();
+                return false;
+            }           
+            else if (contactsPhone_v== ""){
+                alert("请输入您的手机号！");
+                document.orderForm.contactsPhone.focus();
+                return false;
+            }
+            else if (phone.test(contactsPhone_v) == false){
+                alert("请输入正确的手机号！");
+                document.orderForm.contactsPhone.focus();
+                return false;
+            }
+            else if (pay_v==""){
+                window.location.hash='#ly-pay'; 
+                alert("请选择支付方式！"); 
+                return false;
+            };
+
+            if (selcetedDays.length == 0) {
+                window.location.hash='#ly-date';
+                alert("请选择服务日期！")
+                } 
+            else {
+                //生成选中的日期放入数组arr
+                var arr = []; 
+                for (var i = selcetedDays.length - 1; i >= 0; i--) {
+                arr[i]=selcetedDays[i]._i;
+                }; 
+                document.getElementById('selectedDays').value = arr;//将获得的值赋值给input
+            };
+        };        
+        function go(){
+            var url = url_hostName+"/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/order_new?ver=v1.0.3";
+           /* document.orderForm.action = url;*/
+            
+            //改用post提交，获取返回值
+            $.post( url, $("#orderForm").serialize(), function(data) { 
+                tt =  eval('(' + data + ')');
+                status = tt.status;
+                console.log(status)
+                if (status == 0) {
+                     window.location.href='ly-notice-success.html';// 提交成功后跳转
+                } 
+                else if(status == 1){
+                    alert("令牌失效!")
+                }
+                else if(status == 2){
+                    alert("令牌、uuid校验错误!")
+                }
+                else if(status == 3){
+                    alert("选择的日期被占用!")
+                }
+                else if(status == 4){
+                    alert("该账户已经被停用!")
+                }
+                else {
+                    alert("其他未知错误!")
+                }               
+            })             
+            
+        };        
+        //确认或取消
+        $(".ui-dialog-close").click(function(){
+            $(".ui-dialog").removeClass("show");            
+        });
+        $(".ui-dialog-ft button").click(function(){
+            $(".ui-dialog").removeClass("show");
+            go();
+        });
+
+       
+    </script>
+  
+</body>
+</html> 

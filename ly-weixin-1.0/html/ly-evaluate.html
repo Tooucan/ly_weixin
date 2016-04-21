@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="../css/frozen.css">    
+    <link rel="stylesheet" href="../css/ly-header.css">
+    <script src="../js/zepto.min.js"></script>
+    <script src="../js/frozen.js"></script>        
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/base.js"></script>
+    <!-- 星级评分 -->   
+    <link rel="stylesheet" href="../css/css-stars.css">
+    <script src="../js/jquery.barrating.js"></script>
+    <script src="../js/examples.js"></script>
+
+	<title>评价</title>
+
+</head>
+<style>
+    .ly-nurse-list {
+            margin-top: 46px;
+        }
+    .ly-nurse-info-data {
+        margin-top: 8px;
+
+    }
+    .ly-info-data {
+        width: 70px;
+    }
+    .ly-info-num {
+        display: block;
+        padding: 0 8px;
+        font-size: 1.4em;  
+    }
+    .ly-enumerative-units {
+        display: block;
+        padding: 0 8px;
+        font-size: 0.6em;
+        color: #888;
+    }
+/*星级评分*/
+    .ly-stars-rating {
+        display: block;
+        background-color: #fff; 
+        padding: 12px 32px;
+    }
+    .text-explain {
+        color: #333;
+        padding: 16px 0;
+        text-align: center;
+    }
+    /*评论框*/
+    .ly-com-box {
+        width: 100%;        
+        background-color: #fff;
+        padding: 48px 0;
+    }
+    .com-textarea {
+        display: block;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin: 0 auto;
+        width: 80%;
+        min-height: 80px;
+        padding: 12px;
+        font-size: 0.8em;
+        color: #333;
+    }
+    .com-textarea:focus {
+        border: 1px solid #666;
+    }
+
+</style>
+<body ontouchstart>
+	    
+<!--      <header class="ui-header ui-header-positive ui-border-b">
+   <i class="ui-icon-return" onclick="history.back()"></i>
+   <h1>评价</h1>
+    </header> -->
+    <section id="ly-nurse-intro-wrap">
+        <div class="demo-item">        
+            <div class="demo-block">            
+                <ul class="ly-nurse-list ui-list  ui-border-tb">
+                    <li  class="ly-nurse-list-item ui-border-t">
+                        <div class="ly-nurse-avatar ui-avatar-lg">
+                            <span style="background-image:url(..//img/profile-img-man.png)"></span>
+                        </div>
+                        <div class="ly-nurse-info ui-list-info ui-border-t">
+                            <h4 class="ly-nurse-name"><span id="nurseName">罗老师</span>
+                            <div class="ly-stars">
+                            <i class="ly-star"></i>
+                            <i class="ly-star"></i>
+                            <i class="ly-star"></i>
+                            <i class="ly-star"></i>
+                            </div>                        
+                            </h4>                      
+                            <div class="ly-nurse-info-data ">
+                                <div class="ly-info-data ui-border-l ui-col">
+                                    <span class="ly-info-num" id="totalOrders">33</span><span class="ly-enumerative-units ">单</span>
+                                </div>
+                                <div class="ly-info-data ui-border-l ui-col">
+                                    <span class="ly-info-num" id="pennantNumber">3</span><span class="ly-enumerative-units ">锦旗</span>
+                                </div>
+                                <div class="ly-info-data ui-border-l ui-col">
+                                    <span class="ly-info-num" id="commentNumber">21</span><span class="ly-enumerative-units ">好评</span>
+                                </div>                            
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    </div>
+    </section>
+    <form id="evaluate" name="evaluate" action="#" method="post">
+        <section class="ly-stars-rating">
+            <div class="ui-flex ui-flex-pack-center">
+                <select id="example-css" name="star">
+                    <option value=""></option> <!-- 初始为空 -->
+                    <option value="1" data-html=" 很不满意 " >服务质量太差，态度不友好</option>
+                    <option value="2" data-html=" 不满意 " >态度不友好，不够耐心</option>
+                    <option value="3" data-html=" 一般 " >服务质量还行，不爱说话</option>
+                    <option value="4" data-html=" 满意 " >服务很好，很耐心</option>
+                    <option value="5" data-html=" 非常满意 " >服务非常好，非常贴心</option>
+                </select>
+            </div>
+            <div class="text-explain" id="text-explain"> 
+                请对本次服务做出评价，谢谢！
+            </div>       
+        </section>
+        <section>
+            <div class="ly-com-box ui-border-t" >
+            <textarea class="com-textarea" name="comment" rows=5 cols=40  placeholder="请输入你的评价..." ></textarea>
+            <!-- 其他form数据 -->
+            <input type="hidden" id="token" name="token"  value="" />
+            <input type="hidden" id="user_uuid_type" name="user_uuid_type"  value="" />
+            <input type="hidden" id="user_uuid" name="user_uuid"  value="" />    
+            </div>
+        </section>
+        <section class="ui-footer">
+        <div class="ui-btn-wrap">
+        <button class="ui-btn-lg"  onclick="go()">
+        提交评价
+        </button>
+    </form>
+
+
+    
+    
+    <script>
+    //正则分析法 获取url参数
+    function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+    var r = window.location.search.substr(1).match(reg);//获取当前页面url中？后面的字段
+    if (r!=null) return (r[2]); return null;
+    }
+    var code = GetQueryString("code");
+    var id = GetQueryString("id");
+    $.ajax({
+            url: url_hostName+"/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/info?ver=v1.0.3 ",
+            type: "get",
+            dataType: "json",
+            success: function(data) { 
+                    var tt = eval(data).service_provider_info;                    
+                       //填入数据                       
+                       $(".ly-nurse-avatar span").css("background-image","url("+url_hostName + tt.img_url+")");
+                       $("#nurseName").text(tt.name);
+                       $(".ly-stars").addClass("ly-stars-"+Math.ceil(tt.star_level));
+                       $("#totalOrders").text(tt.total_orders);
+                       $("#pennantNumber").text(tt.pennant_number);
+                       $("#commentNumber").text(tt.comment_number);
+
+                       loopStars();
+                },  
+            error: function() {
+                   alert ("链接错误！")
+            }
+            
+        });
+
+//星级选择
+function loopStars(){
+         //评价星级循环
+                $(".ly-stars").empty();//清空
+                //1星
+                for (var i = 0; i < 1 ; i++) {
+                        $(".ly-stars-1").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };                
+                //2星
+                for (var i = 0; i < 2 ; i++) {
+                        $(".ly-stars-2").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };
+                //3星
+                for (var i = 0; i < 3 ; i++) {
+                        $(".ly-stars-3").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };
+                //4星
+                for (var i = 0; i < 4 ; i++) {
+                        $(".ly-stars-4").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };
+                //5星
+                for (var i = 0; i < 5 ; i++) {
+                        $(".ly-stars-5").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };  
+    }
+        $(document).ready(function(){         
+            //当被点击时获取option的text
+            $("#example-css").change(function(){
+                var checktext = $("#example-css option:selected").html();                              
+                //用获取的text替换text-explain中的内容
+                $("#text-explain").html(checktext);
+            })
+
+        })
+
+        function go(){
+            //填入其他数据
+            $("#token").val("44B03F38143B4407901D69E96524FEC9");
+            $("#user_uuid_type").val("IMEI");
+            $("#user_uuid").val("123456789101112");
+            var url = url_hostName+"/api/weixin/chengdu/user/my_order/"+ code +"/operation/comment?ver=v1.0.3  ";
+            document.evaluate.action = url;
+            document.evaluate.submit();
+
+            //改用post提交，获取返回值
+            $.post( url, $("#evaluate").serialize(), function(data){
+                        tt =  eval('(' + data + ')');
+                        status = tt.status;
+
+                        if (status == 0) {
+                             alert("提交成功！")
+                        } 
+                        else if(status == 1){
+                            alert("令牌失效!")
+                        }
+                        else if(status == 2){
+                            alert("令牌、uuid校验错误!")
+                        }
+                        else if(status == 3){
+                            alert("选择的日期被占用!")
+                        }
+                        else if(status == 4){
+                            alert("该账户已经被停用!")
+                        }
+                        else {
+                            alert("其他未知错误!")
+                        }
+                });             
+            
+        };
+
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="../css/frozen.css">
+    <link rel="stylesheet" href="../css/ly-modal.css">
+    <link rel="stylesheet" href="../css/ly-nurse-list-item.css">
+    <link rel="stylesheet" href="../css/ly-header.css">
+    <script src="../js/zepto.min.js"></script>
+    <script src="../js/frozen.js"></script>        
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/base.js"></script>
+
+	<title>订单详情</title>
+
+</head>
+<style>
+.ly-order-detail-info,
+.ly-order-detail-info h4 {
+	font-size: 15px !important;
+}
+.ly-txt-info {
+    width: 70% !important;
+    text-align: right;
+    color: #777;
+}
+.ui-link:after {
+    font-family: "iconfont" !important;
+    font-size: 32px;
+    line-height: 44px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    display: block;
+    color: rgba(0, 0, 0, 0.5);
+    color: #c7c7c7;
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    margin-top: -22px;
+    margin-right: -10px;
+}
+.ly-rsv-dates,
+.ly-stm-dates {
+    padding-right: 10px;
+}
+
+</style>
+<body ontouchstart>
+	    
+     <!-- <header class="ui-header ui-header-positive ui-border-b">
+        <i class="ui-icon-return" onclick="history.back()"></i>
+        <h1>医院陪护</h1>
+         </header> -->
+<section id="ly-nurse-intro-wrap">
+    <div class="demo-item">        
+        <div class="demo-block">            
+            <ul class="ly-nurse-list ui-list  ui-border-tb">
+                <li  class="ly-nurse-list-item ui-border-t">
+                    <div class="ly-nurse-avatar ui-avatar">
+                        <span style="background-image:url(..//img/profile-img-man.png)"></span>
+                    </div>
+                    <div class="ly-nurse-info ui-list-info ui-border-t">
+                        <h4 class="ly-nurse-name"><span id="nurseName"></span>
+                        <div class="ly-stars">
+                        <i class="ly-star"></i>
+                        <i class="ly-star"></i>
+                        <i class="ly-star"></i>
+                        <i class="ly-star"></i>
+                        </div>
+                        <span class="num-orders ui-txt-tips"></span>
+                        </h4>                      
+                        <span class="ly-nurse-brief-info"><span id="nativePlace"></span> <span id="age"></span>岁 护龄<span id="nurseAge"></span>年 </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+<section class="ly-order-detail">
+	<div class="ly-order-detail-info">
+            <ul class="ui-list ui-list-text">
+                <li class="">
+                    <h4 class="ui-nowrap">订单状态</h4>
+                    <div class="ly-txt-info ly-order-state">初始状态</div>
+                </li>
+                <li class="">
+                    <h4 class="ui-nowrap">订单编号</h4>
+                    <div class="ly-txt-info ly-order-code">19826563</div>
+                </li>
+                <li class="">
+                    <h4 class="ui-nowrap">订单类型</h4>
+                    <div class="ly-txt-info ly-category-name">医院护理（全日照顾）</div>
+                </li>
+                <li class="ly-rsv-li ui-link">
+                    <h4 class="ui-nowrap">预约时间</h4>
+                    <div class="ui-nowrap ly-txt-info ly-rsv-dates">2015-10-1 12:20 — 2015-10-6 12:20 </div>
+                </li>
+                <li class="ly-stm-li ui-link">
+                    <h4 class="ui-nowrap">服务时间</h4>
+                    <div class="ui-nowrap ly-txt-info ly-stm-dates">2015-10-1 12:20 — 2015-10-6 12:20 </div>
+                </li>
+                <li class="">
+                    <h4 class="ui-nowrap">订单结算</h4>
+                    <div class="ly-txt-info ly-order-statement">120元/天 X 45天</div>
+                </li>
+                <li class="">
+                    <h4 class="ui-nowrap">实际支付</h4>
+                    <div class="ly-txt-info ly-real-payment">600元</div>
+                </li>
+                <li class="">
+                    <h4 class="ui-nowrap">支付方式</h4>
+                    <div class="ly-txt-info ly-paymentMethod">服务时支付 </div>
+                </li>
+                <li class="">
+                    <h4 class="ui-nowrap">提交时间</h4>
+                    <div class="ly-txt-info ly-create-time">2015-10-1 12:20</div>
+                </li>
+
+            </ul>
+ </div>
+<div class="ly-modal-1 ui-dialog ">
+    <div class="ui-dialog-cnt">
+         <i class="ui-dialog-close" data-role="button"></i>
+        <div class="ui-dialog-bd">
+            <h4>订单取消成功</h4>
+            <div class="ly-intro-l ly-intro-center">您的订单已被取消，若还需服务，请重新下单。</div>
+        </div>
+        <div class="ui-dialog-ft">                        
+            <button id="clickRefresh" type="button" data-role="button">好的，知道了</button>
+        </div>
+    </div>        
+</div> 
+<div class="ly-modal-2 ui-dialog">
+    <div class="ui-dialog-cnt">
+         <i class="ui-dialog-close" data-role="button"></i>
+        <div class="ui-dialog-bd">
+            <h4>取消订单中···</h4>
+            <div class="ly-intro-l ly-intro-center">您的订单 <span class="ui-txt-red" id="count_time">5</span> 秒后将被自动取消!</div>
+        </div>
+        <div class="ui-dialog-ft">                        
+            <button  type="button" data-role="button">不，稍等一下</button>
+        </div>
+    </div>        
+</div>
+<div class="ly-modal-3 ui-dialog">
+    <div class="ui-dialog-cnt">
+         <i class="ui-dialog-close" data-role="button"></i>
+        <div class="ui-dialog-bd">
+            <h4>预约时间</h4>
+            <div class="ly-intro-l ly-intro-center"><span id="rsv_dates"></span></div>
+        </div>
+        <div class="ui-dialog-ft">                        
+            <button  type="button" data-role="button">关闭</button>
+        </div>
+    </div>        
+</div>
+<div class="ly-modal-4 ui-dialog">
+    <div class="ui-dialog-cnt">
+         <i class="ui-dialog-close" data-role="button"></i>
+        <div class="ui-dialog-bd">
+            <h4>服务时间</h4>
+            <div class="ly-intro-l ly-intro-center"><span id="stm_dates"></span></div>
+        </div>
+        <div class="ui-dialog-ft">                        
+            <button  type="button" data-role="button">关闭</button>
+        </div>
+    </div>        
+</div>
+</section>
+<section class="ui-footer">
+	<div class="ui-btn-wrap">
+	<button class="ly-order-next ly-btn-lg ui-btn-lg">
+	申请退款
+	</button>
+</div>
+</section>
+<script type="text/javascript">
+    //正则分析法 获取url参数
+    function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+    var r = window.location.search.substr(1).match(reg);//获取当前页面url中？后面的字段
+    if (r!=null) return (r[2]); return null;
+    }
+    var code = GetQueryString("code");
+    var ly_state = "";
+        //订单详情数据请求
+        $.ajax({
+            url: url_hostName +"/api/weixin/chengdu/user/my_order/"+ code +"/detail?ver=v1.0.3",
+            type: "POST",
+            data: {
+                token        : '44B03F38143B4407901D69E96524FEC9',
+                user_uuid_type : 'IMEI',
+                user_uuid    : '123456789101112',
+            },
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            success: function(data) { 
+                    var tt = eval(data).order;                    
+                    var o_code = tt.order_status_code;
+                     if (o_code == 1 || o_code == 2 ) {
+                        tt.next = "取消订单";
+                        $(".ly-order-next").click(function(){
+                            timedCount();//倒计时提醒 
+                          })
+                       } 
+                       else if(o_code == 13 || o_code == 14 || o_code == 15 || o_code == 16 ){
+                        tt.next = "去评价";
+                        $(".ly-order-next").click(function(){
+                            window.location.href = "ly-evaluate.html?code="+tt[i].code+"&id="+ tt[i].sp_id+"";
+                            });
+                        }
+                        else {
+                            $(".ly-order-next").hide();
+                        }              
+                       
+                       //判断状态
+                       switch (o_code){
+                        
+                        case "1":
+                            ly_state = "ly-state-green";
+                            break;
+                        case "2":
+                            ly_state = "ly-state-green";
+                            break;
+                        case "3":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "4":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "5":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "6":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case "7":
+                            ly_state = "ly-state-green";
+                            break;
+                        case "8":
+                            ly_state = "ly-state-gray";
+                            break;
+                        case '9':
+                            ly_state = "ly-state-yellow";
+                            break;
+                        case '10':
+                            ly_state = "ly-state-red";
+                            break;
+                        case '11':
+                            ly_state = "ly-state-red";
+                            break;
+                        case '12':
+                            ly_state = "ly-state-gray";
+                            break;
+                        case '13':
+                            ly_state = "ly-state-button";
+                            break;
+                        case '14':
+                            ly_state = "ly-state-button";
+                            break;
+                        case '15':
+                            ly_state = "ly-state-button";
+                            break; 
+                        case '16':
+                            ly_state = "ly-state-button";
+                            break;
+                        case '17':
+                            ly_state = "ly-state-gray";
+                            break;
+                        case '100':
+                            ly_state = "ly-state-red";
+                            $(".ly-order-state").text("错误订单");
+                            break;
+                       };                                            
+                       //填入数据
+                       $(".ly-order-state").text(tt.order_status_name);
+                       $(".ly-order-code").text(tt.code);
+                       $(".ly-category-name").text(tt.category_name);
+                       $(".ly-rsv-dates").text(tt.rsv_dates);
+                       $(".ly-stm-dates").text(tt.stm_dates);
+                       $(".ly-order-statement").text("￥"+ tt.unit_price + " " + tt.unit +" X "+tt.stm_num+" 天  = "+tt.rsv_payment+" 元" );
+                       $(".ly-real-payment").text(tt.real_payment + "元");
+                       $(".ly-paymentMethod").text(toChinese(tt.paymentMethod));
+                       $(".ly-create-time").text(tt.create_time);
+                       $(".ly-order-next").text(tt.next);
+
+                       //若未付款，实际支付显示为“未付款”
+                       if (tt.real_payment == "" || tt.real_payment == undefined) {$(".ly-real-payment").text("未付款");} 
+
+                       //若还未结算订单，服务时间显示为“尚未开始服务”
+                       if (tt.stm_dates == "" || tt.stm_dates == undefined) {$(".ly-stm-dates").text("尚未开始服务");}
+
+                       //展开预约时间
+                       $(".ly-rsv-dates").click(function(){
+                            $(".ly-modal-3").addClass("show")
+                            $("#rsv_dates").html(f_date(tt.rsv_dates))                
+                       });
+                       //展开服务时间
+                       $(".ly-stm-dates").click(function(){
+                            $(".ly-modal-4").addClass("show")
+                            if (tt.stm_dates == "" || tt.stm_dates == undefined) {$("#stm_dates").html("该订单尚未开始服务") } else {$("#stm_dates").html(f_date(tt.stm_dates))}
+                                           
+                       });
+
+                       
+                       $(".ly-nurse-avatar span").css("background-image","url(" + url_hostName + tt.img_url+")");
+                       $("#nurseName").text(tt.sp_name);
+                       $(".ly-stars").addClass("ly-stars-"+Math.ceil(tt.sp_star));
+                       $("#nativePlace").text(tt.sp_nativeplace);
+                       $("#age").text(tt.sp_age);
+                       $("#nurseAge").text(tt.sp_nurse_age);
+
+                       loopStars();
+                },  
+            error: function() {
+                   alert ("链接错误！")
+            }
+            
+        });
+//订单日期格式转换
+function f_date(dates){
+   var f_dates = dates.replace(/,/g,"<br/>");
+   return f_dates;
+} 
+//支付方式转换为中文
+function toChinese(pay_m){
+    if (pay_m == "service_payment") { return pay_m = "服务时支付"; } 
+    else if (pay_m == "wechat_payment") { return pay_m = "微信支付"; } 
+    else if (pay_m == "alipay") { return pay_m = "支付宝支付"; }
+    else { return pay_m = "未选择"; }
+}
+
+//倒计时提醒
+function timedCount(){
+    //显示弹窗
+    $(".ly-modal-2").addClass("show")
+    //倒计时
+    var time = 3;
+    document.getElementById('count_time').innerHTML= time;
+    time -= 1; 
+    timer = setInterval(function(){
+        if (time == 0) {
+                orderCancel();//取消订单
+                $(".ui-dialog").removeClass("show");                
+                clearInterval(timer);//停止
+                time=3;
+            } else {
+                document.getElementById('count_time').innerHTML= time;
+                time--;
+        }
+    },1000);  
+}
+
+//取消订单
+function orderCancel(){
+
+    $.ajax({
+            url: url_hostName+"/api/weixin/chengdu/user/my_order/"+ code +"/operation/cancel?ver=v1.0.3",
+            type: "POST",
+            data: {
+                token        : '44B03F38143B4407901D69E96524FEC9',
+                user_uuid_type : 'IMEI',
+                user_uuid    : '123456789101112',
+            },
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            success: function(data) { 
+                tt =  eval(data);                
+                status = tt.status;
+                if (status == 0) {
+                    $(".ly-modal-1").addClass("show");// 取消成功后弹出
+                } 
+                else if(status == 1){
+                    alert("令牌失效!")
+                }
+                else if(status == 2){
+                    alert("令牌、uuid校验错误!")
+                }
+                else if(status == 3){
+                    alert("选择的日期被占用!")
+                }
+                else if(status == 4){
+                    alert("该账户已经被停用!")
+                }
+                else {
+                    alert("其他未知错误!")
+                }   
+            },  
+            error: function() {
+                   alert ("链接错误！")
+            }
+            
+        });
+
+}
+function loopStars(){
+         //评价星级循环
+                $(".ly-stars").empty();//清空
+                //1星
+                for (var i = 0; i < 1 ; i++) {
+                        $(".ly-stars-1").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };                
+                //2星
+                for (var i = 0; i < 2 ; i++) {
+                        $(".ly-stars-2").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };
+                //3星
+                for (var i = 0; i < 3 ; i++) {
+                        $(".ly-stars-3").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };
+                //4星
+                for (var i = 0; i < 4 ; i++) {
+                        $(".ly-stars-4").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };
+                //5星
+                for (var i = 0; i < 5 ; i++) {
+                        $(".ly-stars-5").append(
+                            "<i class='ly-star'></i>"
+                            )
+                        };  
+    }
+    //确认或取消
+
+    $(".ui-dialog-close").click(function(){
+        $(".ui-dialog").removeClass("show");
+        clearInterval(timer);                                  
+    });
+    $(".ui-dialog-ft button").click(function(){
+        $(".ui-dialog").removeClass("show");
+        clearInterval(timer);                
+    });
+    $("#clickRefresh").click(function(){
+        window.location.reload();//刷新页面
+    })
+
+</script>
+
+</body>
+</html>

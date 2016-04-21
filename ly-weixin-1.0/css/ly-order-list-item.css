@@ -1,0 +1,80 @@
+     
+       .ly-nurse-avatar {
+        display: inline-block;
+       }
+
+        /*订单列表*/
+        .ly-order-link {
+            color: #333;
+        }
+        .ly-order-list-item {
+            padding: 12px 0;
+        }
+
+        /*订单类型*/
+        .ly-order-type {
+            display: inline-block;
+            margin: 0 4px;
+        }
+        .ly-day {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-image: url(..//img/ic_type_sun.png);
+            background-size: cover;
+
+        }
+        .ly-night {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-image: url(..//img/ic_type_moon.png);
+            background-size: cover;
+
+        }
+   
+        /*订单信息*/
+        .ly-order-list-item {            
+            position: relative;
+        }
+
+        .ly-order-day {
+            margin-left: 4px;
+            color: #888;
+        }
+
+        .ly-order-info p {
+            font-size: 12px;
+            margin: 4px 0;            
+        }
+        /*订单状态*/
+        .ly-order-state {
+            display: block;
+            font-size: 12px;
+            text-align: right;            
+            position: absolute;
+            right: 10px;
+            top: 15px;
+        }
+        .ly-state-red {
+            color: #F74C31;
+        }
+        .ly-state-green {
+            color: #56AE23;
+        }
+        .ly-state-yellow {
+            color: #FF7F0D;
+        }
+        .ly-state-gray {
+            color: #999;
+        }
+        .ly-state-button {
+            width: 64px;
+            height: 32px;
+            line-height: 32px;
+            color: #999;
+            border: 1px solid #ddd;
+            text-align: center;
+            border-radius: 4px;
+            background-color: #fff;
+        }

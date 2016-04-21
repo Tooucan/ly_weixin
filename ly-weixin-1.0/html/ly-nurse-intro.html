@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <title>医院陪护员</title> 
+        <link rel="stylesheet" href="../css/frozen.css">
+        <link rel="stylesheet" href="../css/ly-nurse-intro.css">
+        <link rel="stylesheet" href="../css/ly-header.css">
+        <link rel="stylesheet" href="../css/base.css">
+        <script src="../js/zepto.min.js"></script>
+        <script src="../js/frozen.js"></script>       
+        <script src="../js/jquery.min.js"></script>
+        <script src="../js/jquery.rotate.min.js"></script>
+        <script src="../js/base.js"></script>        
+      
+    </head>
+
+    <body>
+<!--      <header class="ui-header ui-header-positive ui-border-b">
+   <i class="ui-icon-return" onclick="history.back()"></i>
+   <h1>医院陪护员</h1>        
+    </header>  -->
+    
+<section class="ui-container">
+    <section class="ui-panel ui-border-b">
+        <div class="ly-nurse-info-wrap ui-center">  
+            <div class="ly-nurse-avatar-wrap">
+                <div class="ly-nurse-avatar ui-avatar-lg"></div>
+                <span class="ly-nurse-state"></span>
+            </div>
+            <div class="ly-stars">
+                <i class="ly-star"></i>
+                <i class="ly-star"></i>
+                <i class="ly-star"></i>
+                <i class="ly-star"></i>
+            </div>
+            <div class="ly-nurse-info">
+                <h4 id="name">#</h4>
+                <p>
+                <span id="homeplace">#</span>
+                <span><span id="age">0</span>岁</span>
+                <span>护龄<span id="nursing_age">10</span>年</span>
+                </p>
+                <div class="ly-nurse-data">
+                <span><i class="ly-nurse-data-orders"></i><span id="orders">0</span> 单</span>
+                <span><i class="ly-nurse-data-pennants"></i><span id="pennants">0</span> 面</span>
+                <span><i class="ly-nurse-data-likes"></i><span id="likes">0</span>个</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="ly-nurse-intro ui-whitespace">
+            <div class="ly-intro">
+                <p class="ui-nowrap-multi">
+                  <span>护工介绍：</span><q id="intro">从事护理行业十余年，经验丰富，拥有医院陪护、家庭照护、中级母婴护理合格证，多次护理老人、产妇、新生儿等，得到很多患者及家人的一致好评。  </q>
+                </p>
+                <i class="ly-intro-i"></i>
+            </div>
+            <div class="ly-nurse-tags">                                       
+            </div>
+        </div>
+    </section>
+    <section class="ui-panel ui-border-b">
+        <div class="ui-whitespace ly-bg-white ly-padding-b">
+            <label><h4 class="ly-title ui-border-b">服务项目</h4></label>
+                <ul class="ly_service_items ly-list"></ul>
+        </div>
+    </section>
+    <section class="ui-panel ui-border-b">
+        <div class="ui-whitespace ly-bg-white ly-padding-b">
+            <label><h4 class="ly-title ui-border-b">服务流程</h4></label>
+            <div class="ly-service-flow">
+                <img src="..//img/bg_service-flow.png" alt="">
+                <div class="ui-row-flex ">
+                    <h5 class="ui-col ui-center">预约陪护</h5>
+                    <h5 class="ui-col ui-center">确认病情</h5>
+                    <h5 class="ui-col ui-center">签订合同</h5>
+                    <h5 class="ui-col ui-center">缴纳费用</h5>
+                    <h5 class="ui-col ui-center">开始服务</h5>
+                </div>
+                <div class="ly-intro">
+                    <h5 class="ui-txt-info ui-border-b">详情如下 ：</h5>
+                    <p class="ui-txt-info ui-nowrap-multi">
+                        1、 App、微信或400电话下单，预约陪护；<br>
+                        2、 医院护理中心到床确认病人病情；<br>
+                        3、 按不同病情，确定相应价格，并签订合同；<br>
+                        4、 依照合同约定的价格，缴纳费用；<br>
+                        5、 护理中心2小时内安排护理人员，开始服务;；
+                    </p>
+                    <i class="ly-intro-i"></i>
+                </div>
+            </div>
+    </section>
+     <section class="ui-panel ui-border-b">
+        <div class="ui-whitespace ly-bg-white ly-padding-b">
+            <label><h4 class="ly-title ui-border-b">服务内容</h4></label>
+            <div class="ly-service-flow">   
+                <div class="ly-intro ly-padding-t">                    
+                    <p class="ui-txt-info ui-nowrap-multi">
+                        1、 协助病患日常生活护理和床单的清洁、整理工作，完成对病患的晨、晚间护理；<br>
+                        2、 协助病患进食/起床活动/递送便器；<br>
+                        3、 协助病患按时、按量服药；<br>
+                        4、 安抚病患，让病患感受到家人般的温暖；<br>
+                    </p>
+                    <i class="ly-intro-i"></i>
+                </div>
+            </div>
+    </section>
+    <section class="ui-panel  ui-border-b">
+        <div class="ui-whitespace ly-bg-white ly-padding-b">                
+            <label><h4 class="ly-title ui-border-b">客户评价<span id="ly-comments-num" class="ui-panel-subtitle">1328条</span></h4></label>
+            <div id="wrapper">
+                <div id="scroller">
+                    <ul class="ly-comments ui-list ui-list-pure">                                
+                    </ul>
+                    <div class="viewMore" onclick="viewMore()"><i class="ui-loading" style="display: none;"></i><p>查看更多</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="back-to-top" ></div>
+</section>
+<script type="text/javascript">    
+    //正则分析法 获取url参数
+    function GetQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)","i");
+    var r = window.location.search.substr(1).match(reg);//获取当前页面url中？后面的字段
+    if (r!=null) return (r[2]); return null;
+    }
+    var id = GetQueryString("id");
+    var hospitalId = GetQueryString("hospitalId");
+    var hospitalName = GetQueryString("hospitalName");
+    
+    //get护理员信息
+    var nurse = $.getJSON(url_hostName+"/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/info?ver=v1.0.3", 
+        function(data) {
+        var thisNurse = nurse.responseJSON.service_provider_info;
+        //将信息填写到html
+        var avatarImg = thisNurse.img_url;
+        $(".ly-nurse-avatar").css("background-image","url(" + url_hostName + "/"  + avatarImg + ")" );//护理员头像
+        $(".ly-nurse-state").addClass("ly-nurse-state-" + thisNurse.isbusy);
+        $(".ly-stars").addClass("ly-stars-" + Math.ceil(thisNurse.star_level));
+        $("#name").html(thisNurse.name);
+        $("#age").html(thisNurse.age);
+        $("#homeplace").html(thisNurse.native_place);
+        $("#nursing_age").html(thisNurse.nursing_age);
+        $("#orders").html(thisNurse.total_orders);
+        $("#pennants").html(thisNurse.pennant_number);
+        $("#likes").html(thisNurse.comment_number);
+        $("#intro").html(thisNurse.sketch);     
+        loopStars()
+    });
+    foldAndUnfold();//初始运行
+    //get护理员服务项目
+    $.ajax({
+            url: url_hostName+"/api/android/chengdu/hospital_care/service_provider/"+ id +"/services_info?ver=v1.0.3",
+            type: "POST",
+            data: { hospitalId : hospitalId },
+            dataType: "json",            
+            contentType: "application/x-www-form-urlencoded",
+            success: function(data) {           
+                var tt = eval(data).service_provider_services_info;
+                $(".ly_service_items").empty();//清空               
+                if (tt.length !== 0) {                
+                //循环ul下的li，并填写数据                             
+                for (var i = 0; i < tt.length ; i++) {
+                    $(".ly_service_items").append(
+                    "<li class='ui-border-b'>"
+                        +
+                        "<div class= 'ui-row-flex  ui-flex-align-center'>"
+                            +"<div class='ui-col ui-col-2 ui-flex ui-flex-pack-start'>"
+                                +"<h5 class='ly-nurse-type' name='"+ tt[i].name +"'>"+ tt[i].name +"</h5>"
+                                +"<span class='ui-txt-info'>"+ tt[i].sketch +"</span>"
+                                +"<i class='ly-day'></i>"
+                                +"<i class='ly-night'></i>"
+                            +"</div>"
+                            +"<div class='ly-price-r ui-col ui-flex ui-flex-pack-end'>"
+                                +"<h5 class='ly-price ui-txt-red'>"+ tt[i].price + " " + tt[i].price_unitname + "</h5><i class='ly-price-i'></i>"
+                            +"</div>"
+                            +"<div class='ui-col ui-flex ui-flex-pack-end'>"
+                                +"<a href='ly-order-conf.html?serviceId="+ tt[i].id +"&id="+ id +"&hospitalId="+ hospitalId +"&price="+ tt[i].price  +"&hospitalName="+ hospitalName +"'>"
+                                +"<button  class='ly-btn ui-btn'>预约</button></a>"
+                            +"</div>"
+                        +"</div>"
+                        +"<p class='ly-service-intro ui-txt-info'>"+ tt[i].description +"</p>"
+                    +"</li>"
+                        );                     
+                    };
+                    $("[name='日间陪护']").siblings("i.ly-night").hide();
+                    $("[name='夜间陪护']").siblings("i.ly-day").hide();
+                    $(".ly-list li").first().find("p").show();//默认展开第一项
+                    hideAndShow();//循环结束运行
+                }
+                else {
+                    $(".ly_service_items").append("<p class='data-error'>暂时还没有服务项目！</p>");
+                }           
+                    },
+            error: function() {
+                alert("获取数据错误！")
+                }
+        });
+        //get护理员技能tag 
+     $.ajax({
+            url: url_hostName + "/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/skills?ver=v1.0.3",
+            type: "GET",            
+            dataType: "json",
+            contentType: "text/plain",             
+            success: function(data) {           
+                var tt = eval(data).service_provider_skills; 
+                $(".ly-nurse-tags").empty();//清空               
+                if (tt.length !== 0) {                
+                //循环ul下的li，并填写数据                             
+                for (var i = 0; i < tt.length ; i++) {
+                    $(".ly-nurse-tags").append(
+                    "<tag class='ly-nurse-tag'>"+ tt[i].name +"</tag>"
+                        ); 
+                    };                    
+                }
+                else {
+                    $(".ly-nurse-tags").html("暂时还没有技能认证···");
+                }           
+                    },
+            error: function() {
+                alert("获取数据错误！")
+                }
+        }); 
+
+    //get护理员评论列表data
+    var page = 0;
+    var t_len; 
+    contentList();//加载第一页       
+    function contentList() {
+        page++;//每次加载增加一页
+        $.ajax({
+        url: url_hostName+"/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/evaluation/comments/"+ page +"?ver=v1.0.3",
+        type: "GET",            
+        dataType: "json",
+        contentType: "text/plain",
+        success: function(data) { 
+            $("#ly-comments-num").html(eval(data).page.totalcount+"条");     
+            var tt = eval(data).comments;
+            t_len = tt.length;            
+            if (tt.length !== 0) {  
+            //循环ul下的li，并填写数据                
+            for (var i = 0; i < tt.length ; i++) {
+                $(".ly-comments").append(
+                "<li class='ui-border-t'>"
+                    +"<h5><span>" + tt[i].customer_phone + "</span>"
+                        +"<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"               
+                        +"</div>"
+                    +"</h5>"
+                    +"<h4>" + tt[i].comment_words + "</h4>"
+                    +"<h6><span class='date'>"+ tt[i].comment_time +" </span></h6>"
+                +"</li>"
+                    ); 
+                };
+                loopStars();//循环结束运行                
+                $(".viewMore i").hide();//隐藏加载动画                
+            }
+            else {
+                console.log(page)
+               if (page == 1) {
+                        $(".ly-comments").empty();//清空  
+                        $(".ly-comments").append("<p class='data-error'>暂时还没有任何评论！</p>");
+                        $(".viewMore").hide();//清空  
+                    };              
+                }           
+                },
+        error: function() {
+            alert("获取数据错误！")
+            }
+        });
+    };
+    function hideAndShow(){
+        var value1 = 0;   
+        //展开或隐藏ly-service-intro        
+        $(".ly-list li").click(function(){             
+            //旋转小三角
+            value1 += 180;
+            $(this).children().children().children("i.ly-price-i").rotate({animateTo:value1,duration: 100});
+            //展开或隐藏切换            
+            $(this).children().next().slideToggle(120);
+        })
+    };
+    function foldAndUnfold(){
+        var value2 = 0;
+        //展开更多ly-intro        
+        $(".ly-intro").click(function(){
+            //旋转小三角
+            value2 += 180;
+            $(this).children("i.ly-intro-i").rotate({animateTo:value2,duration: 100});
+            //展开更多切换             
+            $(this).children("p").toggleClass("ui-nowrap-multi");
+        });               
+    };
+
+back2top();//加载返回顶部
+</script>
+</body>
+</html> 

@@ -1,0 +1,967 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="format-detection" content="telephone=no">
+        <title>乐于护理</title> 
+        <link rel="stylesheet" href="../css/frozen.css">
+        <link rel="stylesheet" href="../css/ly-nurse-list-item.css">
+        <link rel="stylesheet" href="../css/ly-header.css">
+        <script src="../js/zepto.min.js"></script>
+        <script src="../js/frozen.js"></script>        
+        <script src="../js/jquery.min.js"></script>
+        <script src="../js/jquery.cookie.js"></script>
+        <script src="../js/iscroll.js"></script>
+        <script src="../js/iscroll-probe.js"></script>
+        <script src="../js/base.js"></script>
+        
+        
+  
+    </head>
+    <style type="text/css">
+        * {
+            margin:0;
+            padding:0;
+            list-style:none;
+        }
+        body {
+            font-size:14px;
+            height:100%;
+            background-color: #eee;
+            
+        }
+        #wrapper {
+            position: absolute;
+            z-index: 1;
+            top: -12px;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            background: #ccc;
+            overflow: hidden;
+        }
+
+        #scroller {
+            position: absolute;
+            z-index: 1;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            width: 100%;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -o-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+        #pullDown, #pullUp {
+            display: block;          
+            margin-bottom: 28px;
+            width: 100%; 
+            height: 30px;
+            line-height: 30px;
+            padding: 5px 10px;                    
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        #pullDown .pullDownIcon, 
+        #pullUp .pullUpIcon  {
+            display:block;            
+            margin: 10px auto 0;
+            width:24px; 
+            height:24px;
+            background:url(..//img/ic_pull.png) 0 0 no-repeat;
+            -webkit-background-size:cover; background-size:cover;
+            -webkit-transition-property:-webkit-transform;
+            -webkit-transition-duration:250ms;    
+        }
+        #pullDown .pullDownIcon {
+            -webkit-transform:rotate(0deg)) translateZ(0);
+        }
+        #pullUp .pullUpIcon  {
+            -webkit-transform:rotate(-180deg) translateZ(0);
+        }
+
+        #pullDown.flip .pullDownIcon {
+            -webkit-transform:rotate(-180deg) translateZ(0);
+        }
+
+        #pullUp.flip .pullUpIcon {
+            -webkit-transform:rotate(0deg) translateZ(0);
+        }
+
+        #pullDown.loading .pullDownIcon, 
+        #pullUp.loading .pullUpIcon {
+            width: 20px;
+            height: 20px;
+            display: block;
+            background-image: url(..//img/loading_sprite.png);
+            -webkit-background-size: auto 20px;
+            -webkit-animation: am-rotate 1s steps(12) infinite;
+        }
+        .data-error { 
+            width: 100%;                       
+            display: block;           
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        .noMore,
+        .noNew {
+            display: none;
+            height: 32px;
+            line-height: 32px;
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            width: 120px;
+            position: fixed;
+            z-index: 10;
+            left: 50%;
+            top: 115px;
+            border: 1px solid #ccc;
+            border-radius: 32px;
+            box-shadow: 0 4px 8px 0px rgba(204, 204, 204, 0.62);
+            margin-left: -60px;
+        }
+        /* 下拉菜单 */
+        .ly-nurse-filter {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #fff;
+            width: 100%;
+            height: 56px;
+            z-index: 80;
+        }
+        .nav {
+            width:25%;
+            height:16px;
+            margin:20px auto;
+            float: left;
+            z-index: 81;
+        }
+        .clear {
+            clear: both;
+        }
+        .nav p {
+            display:block;
+            line-height: 16px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-align: right;
+            padding-right: 24px;
+            position: relative;
+        }
+        .set:after {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 8px;
+            background:url(..//img/ic_text_unflod.png) no-repeat;
+            background-size: cover;
+            position: absolute;
+            right: 12px;
+            bottom: 0; 
+        }
+        .select:after {
+            content: "";
+            display: block;
+            width: 8px;
+            height: 8px;
+            background:url(..//img/ic_text_flod.png) no-repeat;
+            background-size: cover;
+            position: absolute;
+            right: 12px;
+            bottom: 0;
+        }
+        .new {
+            width:100%;
+            background: #f6f6f6;
+            position:absolute;
+            display:none;
+            z-index: 82;
+            top: 56px;
+            left: 0;
+        }
+        .nav ul li {
+            line-height:32px;
+            padding-left:10px;
+        }        
+        .nav ul li:active,
+        .nav ul li:hover {
+            background:#eee;            
+        }
+
+        /* 弹出modal */
+        #ly-m-intro {
+            font-size: 14px;
+            line-height: 32px;
+            padding: 20px 0;
+            color: #aaa;           
+        }
+        #ly-m-intro h3{
+            font-size: 16px;
+            color: #666;
+            text-align: center;          
+        }
+        .ly-nurse-avatar {                       
+            background-image: url(..//img/profile-img.png);                                                
+        }
+        .ly-nurse-avatar-wrap {
+            position: relative;
+        }  
+        .ly-nurse-state-idle {
+            background-image: url(..//img/ic_dot_free.png);
+            background-size: cover;
+            width: 20px;
+            height: 20px;
+            display: block;
+            position: absolute;
+            bottom: 1%;
+            right: 8%;
+        }
+        .ly-nurse-state-busy {
+            background-image: url(..//img/ic_dot_busy.png);
+            background-size: cover;
+            width: 20px;
+            height: 20px;
+            display: block;
+            position: absolute;
+            bottom: 1%;
+            right: 8%;
+        }
+        #back-to-top {
+            display: none;
+            width: 40px;
+            height: 40px;
+            background: url(../img/ic_pull.png) center center no-repeat;
+            background-color: rgba(238, 238, 238, 1);
+            background-size: 50% 50%;
+            position: fixed;
+            right: 12px;
+            bottom: 24px;
+            border-radius: 40px;
+            z-index: 1000;                
+        }
+        .ly-icon-footer {
+            content: "";
+            display: block;
+            width: 24px;
+            height: 24px;
+            background-size: 100%;
+        }        
+        .ui-tiled li.active {
+            color: #94D3AB;
+        }
+        .ui-footer-btn {
+            background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), to(#f4f4f4));           
+        }
+        .ui-border-r {
+            border-right: 1px solid #eee;
+        }
+        .ui-nowrap {
+            width: 50% !important;
+        }
+
+        </style>        
+
+<body  onload="loaded()" style="overflow: hidden;">
+<!-- <header class="ui-header ui-header-positive ui-border-b">
+   <i class="ui-icon-return" onclick="history.back()"></i>
+   <h1>医院陪护</h1>        
+</header>  -->
+    
+<section class="ly-nurse-container ui-container">
+
+<div class="ly-nurse-filter ui-border-b">
+<div class="nav" id="nav">
+    <p id="hospital_sel" class="set">默认医院</p>
+    <ul id = "hospitals" class="hospitals new"> 
+   
+    </ul>
+</div>
+<div class="nav" id="nav">
+    <p id="skill_sel" class="set">不限技能</p>
+    <ul id = "skills" class="new">
+   <li id="0" class="selected">不限技能</li>     
+    </ul>
+</div>
+<div class="nav" id="nav">
+    <p id="age_sel" class="set">不限年龄</p>
+    <ul id = "ages" class="new">
+    <li id="0-0" class="selected">不限年龄</li>  
+   <li id="20-29">20-29</li>
+   <li id="30-39">30-39</li>
+   <li id="40-99">40以上</li>
+   
+    </ul>
+</div>
+<div class="nav" id="nav">
+    <p id="sort_sel" class="set">默认排序</p>
+    <ul id = "sort" class="new">
+    <li id="0" class="selected">默认排序</li>  
+   <!-- <li id="1">距离最近</li>
+   <li id="2">评分最高</li> -->
+   <li id="3">好评优先</li>
+   <!-- <li id="4">单数最多</li> -->
+   <li id="5">护龄最长</li>
+   <!-- <li id="6">只看空闲</li>  -->
+    </ul>
+</div>
+<div class="clear"></div>      
+</div>
+<div class="ly-modal-1 ui-dialog">
+        <div class="ui-dialog-cnt">
+             <i class="ui-dialog-close" data-role="button"></i>
+            <div class="ui-dialog-bd">                        
+                <div id="ly-m-intro">
+                <P>定位到距离您当前位置最近的医院：</P>
+                <h3 class="hos-sel" ></h3>                        
+                </div>
+            </div>
+            <div class="ui-dialog-ft">                        
+                <button type="button" data-role="button">好的</button>
+            </div>
+        </div>        
+</div>  
+<div class="ly-modal-2 ui-dialog">
+        <div class="ui-dialog-cnt">
+             <i class="ui-dialog-close" data-role="button"></i>
+            <div class="ui-dialog-bd">                        
+                <div id="ly-m-intro">
+                <P>定位失败，已为你推荐默认医院：</P>
+                <h3 class="hos-sel"></h3> 
+                </div>
+            </div>
+            <div class="ui-dialog-ft">                        
+                <button type="button" data-role="button">好的</button>
+            </div>
+        </div>        
+</div>            
+
+<section id="ly-nurse-list-wrap">
+<div> 
+    <div id="wrapper">        
+        <div id="scroller"> 
+            <div id="pullDown">            
+            <span class="pullDownIcon"></span><span class="pullDownLabel">下拉刷新...</span>
+            </div>
+            <ul class="ly-nurse-list ui-list  ui-border-tb">   
+            </ul>            
+            <div id="pullUp" style="display: none;">
+            <span class="pullUpIcon"></span><span class="pullUpLabel">上拉加载更多...</span>
+           </div>
+        </div>
+    </div>
+</div>
+</section> 
+<div class="noNew">已经是最新了...</div>
+<div class="noMore">没有更多了...</div> 
+<div id="back-to-top" ></div>
+</section><!-- /.ui-container-->
+<footer class="ui-footer ui-footer-btn">
+    <ul class="ui-tiled ui-border-t">
+        <li data-href="ly-hospital-list.html" class="ui-border-r active" id="ly-hospital"><i class="ly-icon-footer" style="background-image: url(../img/ic_nav_hospital_activity.png);"></i><div>医院陪护</div></li>
+        <li data-href="ly-home-nurse.html" class="ui-border-r" id="ly-house"><i class="ly-icon-footer" style="background-image: url(../img/ic_nav_house_normal.png);"></i><div>居家护理</div></li>
+        <li data-href="ly-my-orders.html"  id="ly-mine" ><i class="ly-icon-footer" style="background-image: url(../img/ic_nav_mine_normal.png);"></i><div>我的订单</div></li>
+    </ul>
+</footer>
+<script type="text/javascript" charset="utf-8">
+var hospitalId,skillId,notBusyToday,ageId,nurseAge,sortRuleId;
+c_lng = getCookie("lng");
+c_lat = getCookie("lat");
+console.log(c_lng)
+hospitalId = getCookie("hospitalId");
+hospitalName = getCookie("hospitalName");
+var status = "x";
+//判断有无cookiee，无则加载，有则直接拉取医院列表
+if (c_lng == "" || c_lng == null || c_lat == "" || c_lat == null) {
+    getLatAndLng();
+} else {getHospitalData();}
+
+
+function getLatAndLng(status){    
+    var position_option = {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 2000
+    }; 
+    var status = "y";   
+    navigator.geolocation.getCurrentPosition(getPositionSuccess, getPositionError, position_option);
+    function getPositionSuccess( position ){
+            lat = position.coords.latitude;
+            lng = position.coords.longitude;
+            addCookie("lng",lng,0);
+            addCookie("lat",lat,0)
+            status = "success" ;
+            getHospitalData();
+            $(".ly-modal-1").addClass("show"); 
+    };
+    function getPositionError(error) {
+        addCookie("lng",'104.078914',0.2);
+        addCookie("lat",'30.483914',0.2)
+        console.log(getCookie("lng"))
+        switch (error.code) {
+            case error.TIMEOUT:
+                alert("连接超时，请重试");
+                
+                break;
+            case error.PERMISSION_DENIED:
+                alert("您拒绝了使用位置共享服务，查询已取消");
+                
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("获取位置信息失败");
+                
+                break;                
+        }  
+        status = "error" ;
+        getHospitalData();
+        $(".ly-modal-2").addClass("show"); 
+    };  
+    console.log(status) 
+}
+console.log(status)
+function getHospitalData(){
+    //请求医院数据
+    lng = getCookie("lng");
+    lat = getCookie("lat");
+    hospitals_url = url_hostName+"/api/android/chengdu/hospitals?ver=v1.0.3&lng="+lng+"&lat="+lat+"";
+    var hospital_list = $.ajax({
+            url: hospitals_url,
+            type: "GET",           
+            dataType: "json",                
+            success: function(data) { 
+                var tt = eval(data).hospitals; 
+                if  (tt.length !== 0) { 
+                //循环ul下的li，并填写数据                    
+                for (var i = 0; i < tt.length ; i++) {
+                    $("#hospitals").append( "<li id="+ tt[i].id +">"+tt[i].name+"</li>" );                        
+                    }                    
+                    var hospitalName_f =  tt[0].name;
+                    var hospitalId_f =  tt[0].id;          
+                    $(".hos-sel").html(hospitalName_f);//替换modal文本                    
+                    $("#hospitals").find("li").eq(0).addClass("selected");//默认选择第一个医院
+                    addCookie("hospitalName",hospitalName_f,0);//设置cookie
+                    addCookie("hospitalId",hospitalId_f,0);//设置cookie                    
+                    listRefresh();//初次进入刷新
+                    filteringBar();
+                }
+            },
+            error: function() {
+
+                   alert ("链接错误！")
+            }
+        }); 
+}
+getSkillData();
+function getSkillData(){
+    //请求技能数据            
+    skills_url = url_hostName+"/api/android/chengdu/skills?ver=v1.0.3";
+     var skills_list = $.ajax({
+            url: skills_url,
+            type: "GET",           
+            dataType: "json",                
+            success: function(data) {                     
+                var tt = eval(data).skills;
+                if  (tt.length !== 0) { 
+                //循环ul下的li，并填写数据                    
+                for (var i = 0; i < tt.length ; i++) {
+                    $("#skills").append( "<li id="+ tt[i].id +">"+tt[i].name+"</li>" );                        
+                    skillType = tt[i].typeName;
+                    }
+                }                    
+            },
+            error: function() {
+
+                   alert ("链接错误！")
+            }
+
+        });
+}
+
+        function filteringBar(){
+                //替换文本
+                $("#hospital_sel").html( $("#hospitals li").first().html());
+                                
+                //展开或隐藏list
+                $(".nav p").click(function(){                    
+                    var ul = $(this).next();
+                    if(ul.css("display")=="none"){
+                        $(".nav ul").slideUp(400);                       
+                        ul.slideDown(150);
+                    }else{                        
+                        ul.slideUp(150);                        
+                    }
+                });
+                //替换下拉图标class
+                $(".set").click(function(){
+                    var _name = $(this).attr("name");
+                    if( $("[name="+_name+"]").length > 1 ){
+                        $("[name="+_name+"]").removeClass("select");
+                        $(this).addClass("select");
+                    } else {
+                        if( $(this).hasClass("select") ){
+                            $(this).removeClass("select");
+                        } else {
+                            $(this).addClass("select");
+                        }
+                    }
+                });
+                //替换p中的内容
+                $("#nav li").click(function(){
+                    var li=$(this).text();
+                    $(this).parent().prev().html(li);
+                    $(this).siblings().removeClass("selected");
+                    $(this).addClass("selected");
+                    
+                    listRefresh();//刷新内容
+                    $(".new").hide();
+                });              
+                
+         } 
+</script>
+
+<script type="text/javascript">   
+    var myScroll;
+    var page = 1;
+    var pullDownEl = document.getElementById('pullDown');
+    var pullDownL = document.getElementById('pullDownLabel');
+    var pullUpEl = document.getElementById('pullUp');
+    var pullUpL = document.getElementById('pullUpLabel');
+    var pullDownOffset = pullDownEl.offsetHeight;
+    var pullUpOffset = pullUpEl.offsetHeight;
+    var loadingStep = 0;    
+ 
+    var isFree; 
+        //如果选择“只看空闲”，给isFree赋值为1,否则为0
+        /*var isFree = sortRuleId == 6 ? 1 : 0;*/   
+        if (sortRuleId == 6) {isFree = 1;sortRuleId = 0} else {isFree = 0};
+    
+    function listRefresh(){
+         //获取筛选栏的id
+        hospitalId = $("#hospitals").find("li").filter(".selected").attr("id");        
+        skillId = $("#skills").find("li").filter(".selected").attr("id");
+        ageId = $("#ages").find("li.selected").attr("id");
+        sortRuleId = $("#sort").find("li.selected").attr("id");
+        hospitalName= escape($("#hospitals").find("li").filter(".selected").html());
+             
+        //get护理员列表data        
+        $.ajax({
+            url: url_hostName+"/api/weixin/chengdu/hospital_care/service_providers/list/1?ver=v1.0.3",
+            type: "POST",
+            data: {
+                lng         : lng,
+                lat         : lat,
+                hospitalId  : hospitalId,
+                skillId     : skillId,
+                notBusyToday: isFree,
+                nurseAge    : '',
+                age         : ageId,
+                sortRule    : sortRuleId,
+            },
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded",
+            success: function(data) { 
+            var tt = eval(data).service_providers;  
+            console.log(tt)           
+            if  (tt.length !== 0) { 
+            //循环ul下的li，并填写数据
+            $(".ly-nurse-list").empty();//清空
+                for (var i = 0; i < tt.length ; i++) {
+                    $(".ly-nurse-list").append( 
+                            "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
+                            + 
+                            "<a href='ly-nurse-intro.html?id="+ tt[i].id +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
+                            +
+                            "<div class='ly-nurse-avatar-wrap'>"
+                            +
+                            "<div class='ly-nurse-avatar ui-avatar-lg'>"
+                            +
+                            "<span id='img_url' style='background-image:url(" + url_hostName + tt[i].img_url + ")'></span>"                            
+                            +
+                            "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
+                            +
+                            "</div>"
+                            +
+                            "</div>"                          
+                            +
+                            "<div class='ly-nurse-info ui-list-info'>"
+                            +
+                            "<h4 class='ly-nurse-name'>"
+                            +
+                            "<span id='name'>" + tt[i].name  + "</span>"                     
+                            +
+                            "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"
+                            +
+                            "</div>"
+                            +
+                            " <span class='num-orders ui-txt-tips'>"+ tt[i].total_orders + "单</span>"
+                            +
+                            "</h4>"
+                            +
+                            "<span class='ly-nurse-brief-info'>"
+                            +
+                            "<span id='homeplace'>" + tt[i].native_place  + " </span>"
+                            +
+                            "<span id='age'>" + tt[i].age  + "岁 </span>" 
+                            +
+                            "<span id='nursing_age'> 护龄 " + tt[i].nursing_age  + " 年</span>" 
+                            +
+                            "<p class='ly-nurse-intro ui-nowrap-multi'>"+ tt[i].sketch +"</p>"
+                            +
+                            "</div>"
+                            +
+                            "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
+                            +
+                            "</li>");
+                            myScroll.refresh();//获取数据后刷新iscroll
+                            loopStars();
+                            } 
+                        }
+                    else {
+                        $(".ly-nurse-list").empty();//清空
+                         $(".ly-nurse-list").append("<p class='data-error'>暂时还没有数据！</p>");
+                          /* 获取wrapper高度传给data-error  */
+                            w_height = $("#wrapper").height();                            
+                            $(".data-error").css({"height": w_height,"line-height":w_height/2+"px"});
+                    }  
+                },  
+            error: function() {
+                   alert ("链接错误！")
+            }
+            
+        });
+    } 
+         //下拉刷新
+        function pullDownAction() {
+            setTimeout(function() {               
+                page = 1;//回到第一页
+                $.ajax({
+                type: "POST",
+                url: url_hostName+"/api/android/chengdu/hospital_care/service_providers/list/" + page + "?ver=v1.0.3",
+                data: {
+                    lng         : lng,
+                    lat         : lat,
+                    hospitalId  : hospitalId,
+                    skillId     : skillId,
+                    notBusyToday: isFree,
+                    nurseAge    : '',
+                    age         : ageId,
+                    sortRule    : sortRuleId,                 
+                    },
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded",
+                success: function (data) {
+                    var tt = eval(data).service_providers;                   
+                    $(".ly-nurse-list").empty();//清空
+                    //循环ul下的li，并填写数据                    
+                        for (var i = 0; i < tt.length ; i++) {
+                            $(".ly-nurse-list").append( 
+                            "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
+                            + 
+                            "<a href='ly-nurse-intro.html?id="+ tt[i].id +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
+                            +
+                            "<div class='ly-nurse-avatar-wrap'>"
+                            +
+                            "<div class='ly-nurse-avatar ui-avatar-lg'>"
+                            +
+                            "<span id='img_url' style='background-image:url(" + url_hostName + tt[i].img_url + ")'></span>"                            
+                            +
+                            "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
+                            +
+                            "</div>"
+                            +
+                            "</div>"                     
+                            +
+                            "<div class='ly-nurse-info ui-list-info'>"
+                            +
+                            "<h4 class='ly-nurse-name'>"
+                            +
+                            "<span id='name'>" + tt[i].name  + "</span>"
+                            +
+                            "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"               
+                            +
+                            "</div>"
+                            +
+                            " <span class='num-orders ui-txt-tips'>"+ tt[i].total_orders + "单</span>"
+                            +
+                            "</h4>"
+                            +
+                            "<span class='ly-nurse-brief-info'>"
+                            +
+                            "<span id='homeplace'>" + tt[i].native_place  + " </span>"
+                            +
+                            "<span id='age'>" + tt[i].age  + "岁 </span>" 
+                            +
+                            "<span id='nursing_age'> 护龄 " + tt[i].nursing_age  + " 年</span>" 
+                            +
+                            "<p class='ly-nurse-intro ui-nowrap-multi'>"+ tt[i].sketch +"</p>"
+                            +
+                            "</div>"
+                            +
+                            "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
+                            +
+                            "</li>") ;
+                            loopStars();
+                            myScroll.refresh();
+                            setTimeout(function(){
+                                var today=new Date();
+                                var h=today.getHours();
+                                var m=today.getMinutes();
+                                var s=today.getSeconds();
+                                // 给<10的分秒前加0
+                                m=checkTime(m);
+                                s=checkTime(s);                         
+                                function checkTime(i)
+                                {
+                                if (i<10)
+                                  {
+                                  i="0" + i;
+                                  }
+                                return i;
+                                }
+                                //显示更新时间
+                                $(".noNew").show();
+                                $(".noNew").html( h+":"+m+":"+s+" 更新···");
+                                
+                            },400);//当前已是最新提示..
+                            setTimeout(function(){
+                                $(".noNew").hide();
+                            },2000)
+                            }
+                            
+                    },
+                    error: function() {
+                        alert ("链接错误！")
+                    }
+                });               
+            }, 100); 
+        }
+        //上拉加载
+        function pullUpAction() {       
+            setTimeout(function() {
+                page++;//每次加载增加一页
+                $.ajax({
+                type: "POST",
+                url: url_hostName+"/api/android/chengdu/hospital_care/service_providers/list/" + page + "?ver=v1.0.3",
+                data: {
+                    lng         : lng,
+                    lat         : lat,
+                    hospitalId  : hospitalId,
+                    skillId     : skillId,
+                    notBusyToday: isFree,
+                    nurseAge    : '',
+                    age         : ageId,
+                    sortRule    : sortRuleId,
+                    },
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded",                
+                success: function (data) {
+                    var tt = eval(data).service_providers;                  
+                  
+                    if  (tt.length !== 0) { 
+                    //循环ul下的li，并填写数据                    
+                        for (var i = 0; i < tt.length ; i++) {
+                            $(".ly-nurse-list").append( 
+                                    "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
+                                    + 
+                                    "<a href='ly-nurse-intro.html?id="+ tt[i].id  +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
+                                    +
+                                    "<div class='ly-nurse-avatar-wrap'>"
+                                    +
+                                    "<div class='ly-nurse-avatar ui-avatar-lg'>"
+                                    +
+                                    "<span id='img_url' style='background-image:url(" + url_hostName  + tt[i].img_url + ")'></span>"                            
+                                    +
+                                    "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
+                                    +
+                                    "</div>"
+                                    +
+                                    "</div>"
+                                    +
+                                    "<div class='ly-nurse-info ui-list-info'>"
+                                    +
+                                    "<h4 class='ly-nurse-name'>"
+                                    +
+                                    "<span id='name'>" + tt[i].name  + "</span>"
+                                    +
+                                    "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"              
+                                    +
+                                    "</div>"
+                                    +
+                                    " <span class='num-orders ui-txt-tips'>"+ tt[i].total_orders + "单</span>"
+                                    +
+                                    "</h4>"
+                                    +
+                                    "<span class='ly-nurse-brief-info'>"
+                                    +
+                                    "<span id='homeplace'>" + tt[i].native_place  + " </span>"
+                                    +
+                                    "<span id='age'>" + tt[i].age  + "岁 </span>" 
+                                    +
+                                    "<span id='nursing_age'> 护龄 " + tt[i].nursing_age  + " 年</span>" 
+                                    +
+                                    "<p class='ly-nurse-intro ui-nowrap-multi'>"+ tt[i].sketch +"</p>"
+                                    +
+                                    "</div>"
+                                    +
+                                    "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
+                                    +
+                                    "</li>");
+                                    myScroll.scrollBy(0, -480, 1000);//从当前位置向下滚动480px
+                                    myScroll.refresh();//获取数据后刷新iscroll
+                                    loopStars();
+                                    } 
+                                }
+                            else {
+                                    myScroll.refresh();
+                                    setTimeout(function(){                                
+                                        //显示noMore
+                                        $(".noMore").show();      
+                                        
+                                    },400);
+                                    setTimeout(function(){
+                                        $(".noMore").hide();
+                                    },2000)
+                            }                  
+                
+                },
+                error: function() {
+                        alert("链接错误！")
+                    }
+                });                  
+                }, 100);  
+              };
+      
+//确认或取消
+$(".ui-dialog-close").click(function(){
+    $(".ui-dialog").removeClass("show");            
+});
+$(".ui-dialog-ft button").click(function(){
+    $(".ui-dialog").removeClass("show");
+});  
+//初始化iScroll控件
+function loaded () {            
+    myScroll = new IScroll('#wrapper', { 
+        probeType: 3,
+        preventDefault: true,
+        topOffset: pullDownOffset,        
+        useTransition: false,                
+        scrollbars: true,//有滚动条  
+        mouseWheel: true,//允许滑轮滚动  
+        fadeScrollbars: true,//滚动时显示滚动条，默认影藏，并且是淡出淡入效果  
+        bounce:true,//边界反弹  
+        interactiveScrollbars:true,//滚动条可以拖动  
+        shrinkScrollbars:'scale',// 当滚动边界之外的滚动条是由少量的收缩。 
+        click: true,// 允许点击事件                
+        momentum:true,// 允许有惯性滑动
+        tap: true,//允许tap事件
+    });
+
+    //iscroll模拟返回顶部
+
+    //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失  
+     
+   myScroll.on('scroll', function(){  
+        if (this.y < -300){
+            $("#back-to-top").fadeIn(600);
+            $('.ui-footer').fadeOut(600);
+        }
+        else
+        {  
+            $("#back-to-top").fadeOut(600);
+            $('.ui-footer').fadeIn(600);
+        }
+    });
+
+    //当点击跳转链接后，回到页面顶部位置  
+
+    $("#back-to-top").click(function(){  
+        myScroll.scrollTo(0, 0, 600);                
+        return false;                  
+    });     
+   
+    //拉动中执行···
+    myScroll.on('scroll',  function () {
+     if ( this.y > 20 && this.y < 70) {                  
+          pullDownEl.style.cssText = "display: block";           
+          pullDownEl.className = 'flip';
+          pullDownEl.querySelector('.pullDownLabel').innerHTML = '下拉刷新...';
+        }
+     else if (this.y > 70) {
+          pullDownEl.style.cssText = "display: block"; 
+          pullDownEl.className = '';
+          pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新...';
+        } 
+     else if (this.y > (this.maxScrollY - 20) && this.y < (this.maxScrollY - 10)) {
+        console.log(this.maxScrollY)
+        console.log(this.y)
+          pullUpEl.style.cssText = "display: block"; 
+          pullUpEl.className = 'flip';
+          pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';          
+        } 
+     else if ( this.y < (this.maxScrollY - 20)) {
+        console.log(this.y)
+          pullUpEl.style.cssText = "display: block"; 
+          pullUpEl.className = '';
+          pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始加载...';
+          
+                         
+        }
+    });
+    //拉动结束执行···
+    myScroll.on('scrollEnd', function () {
+     if (pullDownEl.className.match('flip')) {
+          pullDownEl.className = 'loading';                  
+          pullDownEl.querySelector('.pullDownLabel').innerHTML = '加载中...';
+          document.getElementById("wrapper").style.cssText = "margin-top: 70px";
+          setTimeout(function() {              
+              pullDownAction();
+              pullDownEl.style.cssText = "display: none";
+              myScroll.refresh();
+              },1000)
+        } 
+     else if (pullUpEl.className.match('flip')) {
+              pullUpEl.className = 'loading';
+              pullUpEl.querySelector('.pullUpLabel').innerHTML = '加载中...'; 
+              myScroll.refresh();
+              myScroll.scrollTo(0, this.maxScrollY, 100);
+              setTimeout(function() {
+              pullUpEl.style.cssText = "display: none";
+              pullUpAction(); 
+              myScroll.refresh();
+              },1000)
+        }
+    });             
+}
+ //初始化绑定IScroll控件 
+document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false); 
+
+</script>
+<script>
+$('.ui-list li,.ui-tiled li').click(function(){
+    if($(this).data('href')){
+        location.href= $(this).data('href');
+    }
+});
+</script>
+</body>
+</html> 

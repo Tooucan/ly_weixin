@@ -132,7 +132,7 @@
             position: fixed;
             z-index: 10;
             left: 50%;
-            top: 115px;
+            top: 74px;
             border: 1px solid #ccc;
             border-radius: 32px;
             box-shadow: 0 4px 8px 0px rgba(204, 204, 204, 0.62);
@@ -145,7 +145,7 @@
             left: 0;
             background-color: #fff;
             width: 100%;
-            height: 56px;
+            height: 57px;
             z-index: 80;
         }
         .nav {
@@ -322,7 +322,7 @@
    <li id="3">好评优先</li>
    <!-- <li id="4">单数最多</li> -->
    <li id="5">护龄最长</li>
-   <!-- <li id="6">只看空闲</li>  -->
+   <li id="6">价格最低</li> 
     </ul>
 </div>
 <div class="clear"></div>      
@@ -384,62 +384,56 @@
     </ul>
 </footer>
 <script type="text/javascript" charset="utf-8">
-var hospitalId,skillId,notBusyToday,ageId,nurseAge,sortRuleId;
-c_lng = getCookie("lng");
-c_lat = getCookie("lat");
-console.log(c_lng)
-hospitalId = getCookie("hospitalId");
-hospitalName = getCookie("hospitalName");
-var status = "x";
-//判断有无cookiee，无则加载，有则直接拉取医院列表
-if (c_lng == "" || c_lng == null || c_lat == "" || c_lat == null) {
-    getLatAndLng();
-} else {getHospitalData();}
-
-
-function getLatAndLng(status){    
+function getLatAndLng(status){
+	console.log("getLatAndLng")  
     var position_option = {
         enableHighAccuracy: true,
         maximumAge: 1000,
         timeout: 2000
-    }; 
-    var status = "y";   
+    };      
     navigator.geolocation.getCurrentPosition(getPositionSuccess, getPositionError, position_option);
     function getPositionSuccess( position ){
-            lat = position.coords.latitude;
+    		console.log("getPositionSuccess")            
             lng = position.coords.longitude;
+            lat = position.coords.latitude;
             addCookie("lng",lng,0);
             addCookie("lat",lat,0)
             status = "success" ;
             getHospitalData();
-            $(".ly-modal-1").addClass("show"); 
+            $(".ly-modal-1").addClass("show");
+            getSkillData();
+            filteringBar();
+            listRefresh();
+            closeDialog()
     };
     function getPositionError(error) {
-        addCookie("lng",'104.078914',0.2);
-        addCookie("lat",'30.483914',0.2)
-        console.log(getCookie("lng"))
+    	console.log("getPositionError") 
+    	//设置默认地址
+        addCookie("lng",'104.065911',0.2);
+        addCookie("lat",'30.657384',0.2);
         switch (error.code) {
             case error.TIMEOUT:
-                alert("连接超时，请重试");
-                
+                alert("连接超时，请重试"); 
                 break;
             case error.PERMISSION_DENIED:
                 alert("您拒绝了使用位置共享服务，查询已取消");
-                
                 break;
             case error.POSITION_UNAVAILABLE:
-                alert("获取位置信息失败");
-                
+                alert("获取位置信息失败"); 
                 break;                
         }  
         status = "error" ;
-        getHospitalData();
-        $(".ly-modal-2").addClass("show"); 
+        getHospitalData();	
+        $(".ly-modal-2").addClass("show");
+        getSkillData();
+        filteringBar();
+        listRefresh();
+        closeDialog()
     };  
-    console.log(status) 
+   
 }
-console.log(status)
 function getHospitalData(){
+	console.log("getHospitalData") 
     //请求医院数据
     lng = getCookie("lng");
     lat = getCookie("lat");
@@ -447,7 +441,8 @@ function getHospitalData(){
     var hospital_list = $.ajax({
             url: hospitals_url,
             type: "GET",           
-            dataType: "json",                
+            dataType: "json", 
+            async:false,               
             success: function(data) { 
                 var tt = eval(data).hospitals; 
                 if  (tt.length !== 0) { 
@@ -460,9 +455,7 @@ function getHospitalData(){
                     $(".hos-sel").html(hospitalName_f);//替换modal文本                    
                     $("#hospitals").find("li").eq(0).addClass("selected");//默认选择第一个医院
                     addCookie("hospitalName",hospitalName_f,0);//设置cookie
-                    addCookie("hospitalId",hospitalId_f,0);//设置cookie                    
-                    listRefresh();//初次进入刷新
-                    filteringBar();
+                    addCookie("hospitalId",hospitalId_f,0);//设置cookie                                        
                 }
             },
             error: function() {
@@ -471,14 +464,15 @@ function getHospitalData(){
             }
         }); 
 }
-getSkillData();
 function getSkillData(){
+	console.log("getSkillData") 
     //请求技能数据            
     skills_url = url_hostName+"/api/android/chengdu/skills?ver=v1.0.3";
      var skills_list = $.ajax({
             url: skills_url,
             type: "GET",           
-            dataType: "json",                
+            dataType: "json", 
+            async:false,               
             success: function(data) {                     
                 var tt = eval(data).skills;
                 if  (tt.length !== 0) { 
@@ -487,7 +481,7 @@ function getSkillData(){
                     $("#skills").append( "<li id="+ tt[i].id +">"+tt[i].name+"</li>" );                        
                     skillType = tt[i].typeName;
                     }
-                }                    
+                }                                 
             },
             error: function() {
 
@@ -497,119 +491,300 @@ function getSkillData(){
         });
 }
 
-        function filteringBar(){
-                //替换文本
-                $("#hospital_sel").html( $("#hospitals li").first().html());
-                                
-                //展开或隐藏list
-                $(".nav p").click(function(){                    
-                    var ul = $(this).next();
-                    if(ul.css("display")=="none"){
-                        $(".nav ul").slideUp(400);                       
-                        ul.slideDown(150);
-                    }else{                        
-                        ul.slideUp(150);                        
+function filteringBar(){
+	     console.log("filteringBar") 
+        //替换文本
+        $("#hospital_sel").html( $("#hospitals li").first().html());
+                        
+        //展开或隐藏list
+        $(".nav p").click(function(){                    
+            var ul = $(this).next();
+            if(ul.css("display")=="none"){
+                $(".nav ul").slideUp(400);                       
+                ul.slideDown(150);
+            }else{                        
+                ul.slideUp(150);                        
+            }
+        });
+        //替换下拉图标class
+        $(".set").click(function(){
+            var _name = $(this).attr("name");
+            if( $("[name="+_name+"]").length > 1 ){
+                $("[name="+_name+"]").removeClass("select");
+                $(this).addClass("select");
+            } else {
+                if( $(this).hasClass("select") ){
+                    $(this).removeClass("select");
+                } else {
+                    $(this).addClass("select");
+                }
+            }
+        });
+        //替换p中的内容
+        $("#nav li").click(function(){
+            var li=$(this).text();
+            $(this).parent().prev().html(li);
+            $(this).siblings().removeClass("selected");
+            $(this).addClass("selected");
+            listRefresh();//刷新内容
+            $(".new").hide();
+        });        
+ }
+function listRefresh(){
+	console.log("listRefresh") 
+     //获取筛选栏的id
+    hospitalId = $("#hospitals").find("li").filter(".selected").attr("id");        
+    skillId = $("#skills").find("li").filter(".selected").attr("id");
+    ageId = $("#ages").find("li.selected").attr("id");
+    sortRuleId = $("#sort").find("li.selected").attr("id");
+    hospitalName= escape($("#hospitals").find("li").filter(".selected").html());
+         
+    //get护理员列表data        
+    $.ajax({
+        url: url_hostName+"/api/weixin/chengdu/hospital_care/service_providers/list/1?ver=v1.0.3",
+        type: "POST",
+        data: {
+            lng         : lng,
+            lat         : lat,
+            hospitalId  : hospitalId,
+            skillId     : skillId,
+            notBusyToday: isFree,
+            nurseAge    : '',
+            age         : ageId,
+            sortRule    : sortRuleId,
+        },
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        success: function(data) { 
+        var tt = eval(data).service_providers;  
+        console.log(tt)           
+        if  (tt.length !== 0) { 
+        //循环ul下的li，并填写数据
+        $(".ly-nurse-list").empty();//清空
+            for (var i = 0; i < tt.length ; i++) {
+                $(".ly-nurse-list").append( 
+                        "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
+                        + 
+                        "<a href='ly-nurse-intro.html?id="+ tt[i].id +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
+                        +
+                        "<div class='ly-nurse-avatar-wrap'>"
+                        +
+                        "<div class='ly-nurse-avatar ui-avatar-lg'>"
+                        +
+                        "<span id='img_url' style='background-image:url(" + url_hostName + tt[i].img_url + ")'></span>"                            
+                        +
+                        "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
+                        +
+                        "</div>"
+                        +
+                        "</div>"                          
+                        +
+                        "<div class='ly-nurse-info ui-list-info'>"
+                        +
+                        "<h4 class='ly-nurse-name'>"
+                        +
+                        "<span id='name'>" + tt[i].name  + "</span>"                     
+                        +
+                        "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"
+                        +
+                        "</div>"
+                        +
+                        " <span class='num-orders ui-txt-tips'>"+ tt[i].total_orders + "单</span>"
+                        +
+                        "</h4>"
+                        +
+                        "<span class='ly-nurse-brief-info'>"                        
+                        +
+                        "<span id='sex'>" + tt[i].sex  + " </span>"
+                        +
+                        "<span id='homeplace'>" + tt[i].native_place  + " </span>"
+                        +
+                        "<span id='age'>" + tt[i].age  + "岁 </span>" 
+                        +
+                        "<span id='nursing_age'> 护龄 " + tt[i].nursing_age  + " 年</span>" 
+                        +
+                        "<p class='ly-nurse-intro ui-nowrap-multi'>"+ tt[i].sketch +"</p>"
+                        +
+                        "</div>"
+                        +
+                        "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
+                        +
+                        "</li>");
+                        myScroll.refresh();//获取数据后刷新iscroll
+                        loopStars();
+                        } 
                     }
-                });
-                //替换下拉图标class
-                $(".set").click(function(){
-                    var _name = $(this).attr("name");
-                    if( $("[name="+_name+"]").length > 1 ){
-                        $("[name="+_name+"]").removeClass("select");
-                        $(this).addClass("select");
-                    } else {
-                        if( $(this).hasClass("select") ){
-                            $(this).removeClass("select");
-                        } else {
-                            $(this).addClass("select");
-                        }
-                    }
-                });
-                //替换p中的内容
-                $("#nav li").click(function(){
-                    var li=$(this).text();
-                    $(this).parent().prev().html(li);
-                    $(this).siblings().removeClass("selected");
-                    $(this).addClass("selected");
-                    
-                    listRefresh();//刷新内容
-                    $(".new").hide();
-                });              
-                
-         } 
-</script>
-
-<script type="text/javascript">   
-    var myScroll;
-    var page = 1;
-    var pullDownEl = document.getElementById('pullDown');
-    var pullDownL = document.getElementById('pullDownLabel');
-    var pullUpEl = document.getElementById('pullUp');
-    var pullUpL = document.getElementById('pullUpLabel');
-    var pullDownOffset = pullDownEl.offsetHeight;
-    var pullUpOffset = pullUpEl.offsetHeight;
-    var loadingStep = 0;    
- 
-    var isFree; 
-        //如果选择“只看空闲”，给isFree赋值为1,否则为0
-        /*var isFree = sortRuleId == 6 ? 1 : 0;*/   
-        if (sortRuleId == 6) {isFree = 1;sortRuleId = 0} else {isFree = 0};
-    
-    function listRefresh(){
-         //获取筛选栏的id
-        hospitalId = $("#hospitals").find("li").filter(".selected").attr("id");        
-        skillId = $("#skills").find("li").filter(".selected").attr("id");
-        ageId = $("#ages").find("li.selected").attr("id");
-        sortRuleId = $("#sort").find("li.selected").attr("id");
-        hospitalName= escape($("#hospitals").find("li").filter(".selected").html());
-             
-        //get护理员列表data        
+                else {
+                    $(".ly-nurse-list").empty();//清空
+                     $(".ly-nurse-list").append("<p class='data-error'>暂时还没有数据！</p>");
+                      /* 获取wrapper高度传给data-error  */
+                        w_height = $("#wrapper").height();                            
+                        $(".data-error").css({"height": w_height,"line-height":w_height/2+"px"});
+                }  
+            },  
+        error: function() {
+               alert ("链接错误！")
+        }        
+    });
+} 
+ //下拉刷新
+function pullDownAction() {
+	console.log("pullDownAction") 
+    setTimeout(function() {               
+        page = 1;//回到第一页
         $.ajax({
-            url: url_hostName+"/api/weixin/chengdu/hospital_care/service_providers/list/1?ver=v1.0.3",
-            type: "POST",
-            data: {
-                lng         : lng,
-                lat         : lat,
-                hospitalId  : hospitalId,
-                skillId     : skillId,
-                notBusyToday: isFree,
-                nurseAge    : '',
-                age         : ageId,
-                sortRule    : sortRuleId,
+        type: "POST",
+        url: url_hostName+"/api/android/chengdu/hospital_care/service_providers/list/" + page + "?ver=v1.0.3",
+        data: {
+            lng         : lng,
+            lat         : lat,
+            hospitalId  : hospitalId,
+            skillId     : skillId,
+            notBusyToday: isFree,
+            nurseAge    : '',
+            age         : ageId,
+            sortRule    : sortRuleId,
             },
-            dataType: "json",
-            contentType: "application/x-www-form-urlencoded",
-            success: function(data) { 
-            var tt = eval(data).service_providers;  
-            console.log(tt)           
-            if  (tt.length !== 0) { 
-            //循环ul下的li，并填写数据
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        success: function (data) {
+            var tt = eval(data).service_providers;                   
             $(".ly-nurse-list").empty();//清空
+            //循环ul下的li，并填写数据                    
+                for (var i = 0; i < tt.length ; i++) {
+                    $(".ly-nurse-list").append( 
+                    "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
+                    + 
+                    "<a href='ly-nurse-intro.html?id="+ tt[i].id +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
+                    +
+                    "<div class='ly-nurse-avatar-wrap'>"
+                    +
+                    "<div class='ly-nurse-avatar ui-avatar-lg'>"
+                    +
+                    "<span id='img_url' style='background-image:url(" + url_hostName + tt[i].img_url + ")'></span>"                            
+                    +
+                    "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
+                    +
+                    "</div>"
+                    +
+                    "</div>"                     
+                    +
+                    "<div class='ly-nurse-info ui-list-info'>"
+                    +
+                    "<h4 class='ly-nurse-name'>"
+                    +
+                    "<span id='name'>" + tt[i].name  + "</span>"
+                    +
+                    "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"               
+                    +
+                    "</div>"
+                    +
+                    " <span class='num-orders ui-txt-tips'>"+ tt[i].total_orders + "单</span>"
+                    +
+                    "</h4>"
+                    +
+                    "<span class='ly-nurse-brief-info'>"                    
+                    +
+                    "<span id='sex'>" + tt[i].sex  + " </span>"
+                    +
+                    "<span id='homeplace'>" + tt[i].native_place  + " </span>"
+                    +
+                    "<span id='age'>" + tt[i].age  + "岁 </span>" 
+                    +
+                    "<span id='nursing_age'> 护龄 " + tt[i].nursing_age  + " 年</span>" 
+                    +
+                    "<p class='ly-nurse-intro ui-nowrap-multi'>"+ tt[i].sketch +"</p>"
+                    +
+                    "</div>"
+                    +
+                    "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
+                    +
+                    "</li>") ;
+                    loopStars();
+                    myScroll.refresh();
+                    setTimeout(function(){
+                        var today=new Date();
+                        var h=today.getHours();
+                        var m=today.getMinutes();
+                        var s=today.getSeconds();
+                        // 给<10的分秒前加0
+                        m=checkTime(m);
+                        s=checkTime(s);                         
+                        function checkTime(i)
+                        {
+                        if (i<10)
+                          {
+                          i="0" + i;
+                          }
+                        return i;
+                        }
+                        //显示更新时间
+                        $(".noNew").show();
+                        $(".noNew").html( h+":"+m+":"+s+" 更新···");
+                        
+                    },400);//当前已是最新提示..
+                    setTimeout(function(){
+                        $(".noNew").hide();
+                    },2000)
+                    }
+                    
+            },
+            error: function() {
+                alert ("链接错误！")
+            }
+        });               
+    }, 100); 
+}
+//上拉加载
+function pullUpAction() {  
+	console.log("pullUpAction")      
+    setTimeout(function() {
+        page++;//每次加载增加一页
+        $.ajax({
+        type: "POST",
+        url: url_hostName+"/api/android/chengdu/hospital_care/service_providers/list/" + page + "?ver=v1.0.3",
+        data: {
+            lng         : lng,
+            lat         : lat,
+            hospitalId  : hospitalId,
+            skillId     : skillId,
+            notBusyToday: isFree,
+            nurseAge    : '',
+            age         : ageId,
+            sortRule    : sortRuleId,
+            },
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",                
+        success: function (data) {
+            var tt = eval(data).service_providers;                  
+          
+            if  (tt.length !== 0) { 
+            //循环ul下的li，并填写数据                    
                 for (var i = 0; i < tt.length ; i++) {
                     $(".ly-nurse-list").append( 
                             "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
                             + 
-                            "<a href='ly-nurse-intro.html?id="+ tt[i].id +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
+                            "<a href='ly-nurse-intro.html?id="+ tt[i].id  +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
                             +
                             "<div class='ly-nurse-avatar-wrap'>"
                             +
                             "<div class='ly-nurse-avatar ui-avatar-lg'>"
                             +
-                            "<span id='img_url' style='background-image:url(" + url_hostName + tt[i].img_url + ")'></span>"                            
+                            "<span id='img_url' style='background-image:url(" + url_hostName  + tt[i].img_url + ")'></span>"                            
                             +
                             "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
                             +
                             "</div>"
                             +
-                            "</div>"                          
+                            "</div>"
                             +
                             "<div class='ly-nurse-info ui-list-info'>"
                             +
                             "<h4 class='ly-nurse-name'>"
                             +
-                            "<span id='name'>" + tt[i].name  + "</span>"                     
+                            "<span id='name'>" + tt[i].name  + "</span>"
                             +
-                            "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"
+                            "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"              
                             +
                             "</div>"
                             +
@@ -617,7 +792,9 @@ function getSkillData(){
                             +
                             "</h4>"
                             +
-                            "<span class='ly-nurse-brief-info'>"
+                            "<span class='ly-nurse-brief-info'>"                            
+                            +
+                            "<span id='sex'>" + tt[i].sex  + " </span>"
                             +
                             "<span id='homeplace'>" + tt[i].native_place  + " </span>"
                             +
@@ -632,273 +809,57 @@ function getSkillData(){
                             "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
                             +
                             "</li>");
+                            myScroll.scrollBy(0, -480, 1000);//从当前位置向下滚动480px
                             myScroll.refresh();//获取数据后刷新iscroll
                             loopStars();
                             } 
                         }
                     else {
-                        $(".ly-nurse-list").empty();//清空
-                         $(".ly-nurse-list").append("<p class='data-error'>暂时还没有数据！</p>");
-                          /* 获取wrapper高度传给data-error  */
-                            w_height = $("#wrapper").height();                            
-                            $(".data-error").css({"height": w_height,"line-height":w_height/2+"px"});
-                    }  
-                },  
-            error: function() {
-                   alert ("链接错误！")
-            }
-            
-        });
-    } 
-         //下拉刷新
-        function pullDownAction() {
-            setTimeout(function() {               
-                page = 1;//回到第一页
-                $.ajax({
-                type: "POST",
-                url: url_hostName+"/api/android/chengdu/hospital_care/service_providers/list/" + page + "?ver=v1.0.3",
-                data: {
-                    lng         : lng,
-                    lat         : lat,
-                    hospitalId  : hospitalId,
-                    skillId     : skillId,
-                    notBusyToday: isFree,
-                    nurseAge    : '',
-                    age         : ageId,
-                    sortRule    : sortRuleId,                 
-                    },
-                dataType: "json",
-                contentType: "application/x-www-form-urlencoded",
-                success: function (data) {
-                    var tt = eval(data).service_providers;                   
-                    $(".ly-nurse-list").empty();//清空
-                    //循环ul下的li，并填写数据                    
-                        for (var i = 0; i < tt.length ; i++) {
-                            $(".ly-nurse-list").append( 
-                            "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
-                            + 
-                            "<a href='ly-nurse-intro.html?id="+ tt[i].id +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
-                            +
-                            "<div class='ly-nurse-avatar-wrap'>"
-                            +
-                            "<div class='ly-nurse-avatar ui-avatar-lg'>"
-                            +
-                            "<span id='img_url' style='background-image:url(" + url_hostName + tt[i].img_url + ")'></span>"                            
-                            +
-                            "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
-                            +
-                            "</div>"
-                            +
-                            "</div>"                     
-                            +
-                            "<div class='ly-nurse-info ui-list-info'>"
-                            +
-                            "<h4 class='ly-nurse-name'>"
-                            +
-                            "<span id='name'>" + tt[i].name  + "</span>"
-                            +
-                            "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"               
-                            +
-                            "</div>"
-                            +
-                            " <span class='num-orders ui-txt-tips'>"+ tt[i].total_orders + "单</span>"
-                            +
-                            "</h4>"
-                            +
-                            "<span class='ly-nurse-brief-info'>"
-                            +
-                            "<span id='homeplace'>" + tt[i].native_place  + " </span>"
-                            +
-                            "<span id='age'>" + tt[i].age  + "岁 </span>" 
-                            +
-                            "<span id='nursing_age'> 护龄 " + tt[i].nursing_age  + " 年</span>" 
-                            +
-                            "<p class='ly-nurse-intro ui-nowrap-multi'>"+ tt[i].sketch +"</p>"
-                            +
-                            "</div>"
-                            +
-                            "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
-                            +
-                            "</li>") ;
-                            loopStars();
                             myScroll.refresh();
-                            setTimeout(function(){
-                                var today=new Date();
-                                var h=today.getHours();
-                                var m=today.getMinutes();
-                                var s=today.getSeconds();
-                                // 给<10的分秒前加0
-                                m=checkTime(m);
-                                s=checkTime(s);                         
-                                function checkTime(i)
-                                {
-                                if (i<10)
-                                  {
-                                  i="0" + i;
-                                  }
-                                return i;
-                                }
-                                //显示更新时间
-                                $(".noNew").show();
-                                $(".noNew").html( h+":"+m+":"+s+" 更新···");
+                            setTimeout(function(){                                
+                                //显示noMore
+                                $(".noMore").show();      
                                 
-                            },400);//当前已是最新提示..
+                            },400);
                             setTimeout(function(){
-                                $(".noNew").hide();
+                                $(".noMore").hide();
                             },2000)
-                            }
-                            
-                    },
-                    error: function() {
-                        alert ("链接错误！")
-                    }
-                });               
-            }, 100); 
-        }
-        //上拉加载
-        function pullUpAction() {       
-            setTimeout(function() {
-                page++;//每次加载增加一页
-                $.ajax({
-                type: "POST",
-                url: url_hostName+"/api/android/chengdu/hospital_care/service_providers/list/" + page + "?ver=v1.0.3",
-                data: {
-                    lng         : lng,
-                    lat         : lat,
-                    hospitalId  : hospitalId,
-                    skillId     : skillId,
-                    notBusyToday: isFree,
-                    nurseAge    : '',
-                    age         : ageId,
-                    sortRule    : sortRuleId,
-                    },
-                dataType: "json",
-                contentType: "application/x-www-form-urlencoded",                
-                success: function (data) {
-                    var tt = eval(data).service_providers;                  
-                  
-                    if  (tt.length !== 0) { 
-                    //循环ul下的li，并填写数据                    
-                        for (var i = 0; i < tt.length ; i++) {
-                            $(".ly-nurse-list").append( 
-                                    "<li id='"+ tt[i].id +"' class='ly-nurse-list-item ui-border-t' >"
-                                    + 
-                                    "<a href='ly-nurse-intro.html?id="+ tt[i].id  +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName +"'>"
-                                    +
-                                    "<div class='ly-nurse-avatar-wrap'>"
-                                    +
-                                    "<div class='ly-nurse-avatar ui-avatar-lg'>"
-                                    +
-                                    "<span id='img_url' style='background-image:url(" + url_hostName  + tt[i].img_url + ")'></span>"                            
-                                    +
-                                    "<i class='ly-nurse-state-"+ tt[i].isbusy +"'></i>"
-                                    +
-                                    "</div>"
-                                    +
-                                    "</div>"
-                                    +
-                                    "<div class='ly-nurse-info ui-list-info'>"
-                                    +
-                                    "<h4 class='ly-nurse-name'>"
-                                    +
-                                    "<span id='name'>" + tt[i].name  + "</span>"
-                                    +
-                                    "<div class='ly-stars ly-stars-"+ Math.ceil(tt[i].star_level) +"'>"              
-                                    +
-                                    "</div>"
-                                    +
-                                    " <span class='num-orders ui-txt-tips'>"+ tt[i].total_orders + "单</span>"
-                                    +
-                                    "</h4>"
-                                    +
-                                    "<span class='ly-nurse-brief-info'>"
-                                    +
-                                    "<span id='homeplace'>" + tt[i].native_place  + " </span>"
-                                    +
-                                    "<span id='age'>" + tt[i].age  + "岁 </span>" 
-                                    +
-                                    "<span id='nursing_age'> 护龄 " + tt[i].nursing_age  + " 年</span>" 
-                                    +
-                                    "<p class='ly-nurse-intro ui-nowrap-multi'>"+ tt[i].sketch +"</p>"
-                                    +
-                                    "</div>"
-                                    +
-                                    "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
-                                    +
-                                    "</li>");
-                                    myScroll.scrollBy(0, -480, 1000);//从当前位置向下滚动480px
-                                    myScroll.refresh();//获取数据后刷新iscroll
-                                    loopStars();
-                                    } 
-                                }
-                            else {
-                                    myScroll.refresh();
-                                    setTimeout(function(){                                
-                                        //显示noMore
-                                        $(".noMore").show();      
-                                        
-                                    },400);
-                                    setTimeout(function(){
-                                        $(".noMore").hide();
-                                    },2000)
-                            }                  
-                
-                },
-                error: function() {
-                        alert("链接错误！")
-                    }
-                });                  
-                }, 100);  
-              };
-      
-//确认或取消
-$(".ui-dialog-close").click(function(){
-    $(".ui-dialog").removeClass("show");            
-});
-$(".ui-dialog-ft button").click(function(){
-    $(".ui-dialog").removeClass("show");
-});  
+                    }                  
+        
+        },
+        error: function() {
+                alert("链接错误！")
+            }
+        });                  
+        }, 100);  
+    };
 //初始化iScroll控件
 function loaded () {            
-    myScroll = new IScroll('#wrapper', { 
-        probeType: 3,
-        preventDefault: true,
-        topOffset: pullDownOffset,        
-        useTransition: false,                
-        scrollbars: true,//有滚动条  
-        mouseWheel: true,//允许滑轮滚动  
-        fadeScrollbars: true,//滚动时显示滚动条，默认影藏，并且是淡出淡入效果  
-        bounce:true,//边界反弹  
-        interactiveScrollbars:true,//滚动条可以拖动  
-        shrinkScrollbars:'scale',// 当滚动边界之外的滚动条是由少量的收缩。 
-        click: true,// 允许点击事件                
-        momentum:true,// 允许有惯性滑动
-        tap: true,//允许tap事件
-    });
+myScroll = new IScroll('#wrapper', { 
+    probeType: 3,
+    preventDefault: true,
+    topOffset: pullDownOffset,        
+    useTransition: false,                
+    scrollbars: true,//有滚动条  
+    mouseWheel: true,//允许滑轮滚动  
+    fadeScrollbars: true,//滚动时显示滚动条，默认影藏，并且是淡出淡入效果  
+    bounce:true,//边界反弹  
+    interactiveScrollbars:true,//滚动条可以拖动  
+    shrinkScrollbars:'scale',// 当滚动边界之外的滚动条是由少量的收缩。 
+    click: true,// 允许点击事件                
+    momentum:true,// 允许有惯性滑动
+    tap: true,//允许tap事件
+	});
+	backToTop();
+	pullDownAndPullUp();
+}
 
-    //iscroll模拟返回顶部
+//初始化绑定IScroll控件 
+document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false); 
 
-    //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失  
-     
-   myScroll.on('scroll', function(){  
-        if (this.y < -300){
-            $("#back-to-top").fadeIn(600);
-            $('.ui-footer').fadeOut(600);
-        }
-        else
-        {  
-            $("#back-to-top").fadeOut(600);
-            $('.ui-footer').fadeIn(600);
-        }
-    });
-
-    //当点击跳转链接后，回到页面顶部位置  
-
-    $("#back-to-top").click(function(){  
-        myScroll.scrollTo(0, 0, 600);                
-        return false;                  
-    });     
-   
+//拉动刷新
+function pullDownAndPullUp(){
+	console.log("pullDownAndPullUp")
     //拉动中执行···
     myScroll.on('scroll',  function () {
      if ( this.y > 20 && this.y < 70) {                  
@@ -911,20 +872,15 @@ function loaded () {
           pullDownEl.className = '';
           pullDownEl.querySelector('.pullDownLabel').innerHTML = '松手开始更新...';
         } 
-     else if (this.y > (this.maxScrollY - 20) && this.y < (this.maxScrollY - 10)) {
-        console.log(this.maxScrollY)
-        console.log(this.y)
+     else if (this.y > (this.maxScrollY - 20) && this.y < (this.maxScrollY - 10)) { 
           pullUpEl.style.cssText = "display: block"; 
           pullUpEl.className = 'flip';
           pullUpEl.querySelector('.pullUpLabel').innerHTML = '上拉加载更多...';          
         } 
-     else if ( this.y < (this.maxScrollY - 20)) {
-        console.log(this.y)
+     else if ( this.y < (this.maxScrollY - 20)) {        
           pullUpEl.style.cssText = "display: block"; 
           pullUpEl.className = '';
           pullUpEl.querySelector('.pullUpLabel').innerHTML = '松手开始加载...';
-          
-                         
         }
     });
     //拉动结束执行···
@@ -937,7 +893,7 @@ function loaded () {
               pullDownAction();
               pullDownEl.style.cssText = "display: none";
               myScroll.refresh();
-              },1000)
+            },1000)
         } 
      else if (pullUpEl.className.match('flip')) {
               pullUpEl.className = 'loading';
@@ -952,16 +908,111 @@ function loaded () {
         }
     });             
 }
- //初始化绑定IScroll控件 
-document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false); 
+ //iscroll模拟返回顶部    
+ function backToTop(){
+ 	console.log("backToTop")    
+   myScroll.on('scroll', function(){  
+   		//当滚动条的位置处于距顶部300像素以下时，跳转链接出现，否则消失  
+        if (this.y < -300){
+            $("#back-to-top").fadeIn(600);
+            $('.ui-footer').fadeOut(600);
+        }
+        else
+        {  
+            $("#back-to-top").fadeOut(600);
+            $('.ui-footer').fadeIn(600);
+        }
+    	});
+	    //当点击跳转链接后，回到页面顶部位置
+	    $("#back-to-top").click(function(){  
+	        myScroll.scrollTo(0, 0, 600);                
+	        return false;
+	    });
+}
+function closeDialog() {
+	console.log("closeDialog")    
+	//确认或取消
+	$(".ui-dialog-close").click(function(){
+	    $(".ui-dialog").removeClass("show");            
+	});
+	$(".ui-dialog-ft button").click(function(){
+	    $(".ui-dialog").removeClass("show");
+	}); 
+}
+function getOpenId(){
+
+}
+var hospitalId,skillId,notBusyToday,ageId,nurseAge,sortRuleId;
+c_lng = getCookie("lng");
+c_lat = getCookie("lat");
+hospitalId = getCookie("hospitalId");
+hospitalName = getCookie("hospitalName");
+//判断有无cookiee，无则加载，有则直接拉取医院列表
+if (c_lng == "" || c_lng == null || c_lat == "" || c_lat == null) {
+    getLatAndLng();
+} else {getHospitalData();getSkillData();filteringBar();listRefresh();}
+
+var myScroll;
+var page = 1;
+var pullDownEl = document.getElementById('pullDown');
+var pullDownL = document.getElementById('pullDownLabel');
+var pullUpEl = document.getElementById('pullUp');
+var pullUpL = document.getElementById('pullUpLabel');
+var pullDownOffset = pullDownEl.offsetHeight;
+var pullUpOffset = pullUpEl.offsetHeight;
+var loadingStep = 0;    
+
+var isFree; 
+    //如果选择“只看空闲”，给isFree赋值为1,否则为0
+    /*var isFree = sortRuleId == 7 ? 1 : 0;*/   
+    if (sortRuleId == 7) {isFree = 1;sortRuleId = 0} else {isFree = 0};
+
+
 
 </script>
+
 <script>
 $('.ui-list li,.ui-tiled li').click(function(){
     if($(this).data('href')){
         location.href= $(this).data('href');
     }
 });
+</script>
+<script type="text/javascript">
+/**
+ *CreateFile: 测试在电脑上创建一个文件件，并在文件夹里写进一些数据。
+ *
+ */
+function CreateFile()
+{
+    console.log("ok")
+   var fso, tf;
+   fso = new ActiveXObject("Scripting.FileSystemObject");//获取对象
+   tf = fso.CreateTextFile("test.txt", true);//创建一个文件夹
+   // 写一行，并且带有新行字符。
+   tf.WriteLine("Testing 1, 2, 3.") ;
+   // 向文件写三个新行字符。  
+   tf.WriteBlankLines(3) ;
+   // 写一行。
+   tf.Write ("This is a test.");
+   console.log("write ok")
+   tf.Close();//关闭
+}
+/**
+ *Folder的API：
+ *任务 方法 
+ *创建文件夹。 FileSystemObject.CreateFolder 
+ *删除文件夹。 Folder.Delete 或 FileSystemObject.DeleteFolder 
+ *移动文件夹。 Folder.Move 或 FileSystemObject.MoveFolder 
+ *复制文件夹。 Folder.Copy 或 FileSystemObject.CopyFolder 
+ *检索文件夹的名字。 Folder.Name 
+ *如果文件夹在驱动器上存在，则找出它。 FileSystemObject.FolderExists 
+ *获得现有 Folder 对象的实例。 FileSystemObject.GetFolder 
+ *找出文件夹的父文件夹名。 FileSystemObject.GetParentFolderName 
+ *找出系统文件夹的路径。 FileSystemObject.GetSpecialFolder 
+ */
+CreateFile();
+alert("Ok! Write Over!");
 </script>
 </body>
 </html> 

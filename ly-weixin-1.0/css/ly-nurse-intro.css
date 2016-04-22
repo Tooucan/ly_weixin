@@ -60,7 +60,7 @@
 }
 .ly-nurse-info h4,
 .ly-nurse-info p {
-    margin: 8px 0;            
+    margin: 4px 0;            
 }
 /*护理员状态*/
 /* isbusy */
@@ -87,7 +87,7 @@ right: 8%;
 /*star 样式*/
 .ly-stars {
     display: inline-block;
-    margin: 8px 4px;
+    margin: 0 4px;
 }
 .ly-star {
     display: inline-block;
@@ -95,7 +95,7 @@ right: 8%;
     height: 12px;
     background-image: url(..//img/iconfont-star.png);
     background-size: cover;
-
+    margin: 0 2px;
 }
 /*数据信息前的icon*/
 .ly-nurse-data span  {            

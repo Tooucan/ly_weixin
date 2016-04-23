@@ -1,6 +1,6 @@
 var url_hostName = "http://120.24.56.56/lyoa";
 // http://ly-git-server:8080  局域网
-//http://120.24.56.56:8080/lyoa  阿里云
+//http://120.24.56.56/lyoa  阿里云
 //http://weixin.loyulcare.cn/weixin
 
 //评价星级

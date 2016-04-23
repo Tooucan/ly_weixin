@@ -15,6 +15,7 @@
 	    <script src="../js/frozen.js"></script>        
 	    <script src="../js/jquery.min.js"></script>
 	    <script src="../js/base.js"></script>
+        <script src="../js/uuid-and-token.js"></script>
     </head>
     <body ontouchstart>
 <!--      <header class="ui-header ui-header-positive ui-border-b">
@@ -28,16 +29,17 @@
         <div class="demo-block">            
             <ul class="ly-order-list ui-list  ui-border-tb">
             </ul>
-            <div class="viewMore" onclick="viewMore()"><i class="ui-loading" style="display: none;"></i><p>查看更多</p></div>
-
+            <div class="viewMore" onclick="viewMore()" style="display: none;"><i class="ui-loading" style="display: none;"></i><p>查看更多</p></div>
         </div>
     </div>
 </section> 
 
-</section><!-- /.ui-container-->
+</section><!-- /.ui-container--> 
+</body>
 <script type="text/javascript">
+    hasUuid();//检查本地磁盘是否有uuid，没有去重新申请，有则直接获取token
     var page = 0;
-    var t_len;
+    var t_len; 
     contentList();//加载第一页
     function contentList(){
         page++;
@@ -45,31 +47,33 @@
         $.ajax({
             url: url_hostName+"/api/weixin/chengdu/user/my_orders/list/"+ page +"?ver=v1.0.3",
             type: "POST",
-            data: {
-                token        : '44B03F38143B4407901D69E96524FEC9',
-                user_uuid_type : 'IMEI',
-                user_uuid    : '123456789101112',
+            data: {                
+                user_uuid_type : "oa_user_uuid",
+                user_uuid    : uuid,
+                token        : access_token,
             },
             dataType: "json",
             contentType: "application/x-www-form-urlencoded",
             success: function(data) {
             var tt = eval(data).orders;
-            t_len = tt.length;            
-            if  (tt.length !== 0) { 
+            t_len = tt.length; 
+            //若数据多于10条，显示查看更多
+            if (t_len > 10 ) { $(".viewMore").show(); }    
+            if  ( t_len !== 0) { 
             //循环ul下的li，并填写数据            
-                for (var i = 0; i < tt.length ; i++) {
+                for (var i = 0; i < t_len ; i++) {
                     var loc_url,ly_state;
-                    var o_code = tt[i].order_status_code;                    	
+                    var o_code = tt[i].order_status_code;                       
                        //跳转链接
                        if (o_code == 13 || o_code == 14 || o_code == 15 || o_code == 16) {
-                       	tt[i].order_status_name = "去评价";
+                        tt[i].order_status_name = "去评价";
                         loc_url = "ly-evaluate.html?code="+tt[i].code+"&id="+ tt[i].sp_id+"";
                        } else {
                         loc_url = "ly-order-details.html?code="+tt[i].code+"";
                        };
                        //判断状态                       
                        switch (o_code){
-                       	
+                        
                         case "1":
                             ly_state = "ly-state-green";
                             break;
@@ -122,7 +126,7 @@
                             ly_state = "ly-state-gray";
                             break;
                         case '100':
-                        	ly_state = "ly-state-red";
+                            ly_state = "ly-state-red";
                             $(".ly-order-state").text("错误订单");
                             break;
                        };                        
@@ -172,6 +176,7 @@
                         if (page == 1) {
                             $(".ly-order-list").empty();//清空  
                             $(".ly-order-list").append("<p class='data-error ui-placehold'>还没有任何订单！</p>"); 
+                            $(".viewMore").hide();
                         };                  
                     }
                 }, 
@@ -181,6 +186,4 @@
             });    
     };
 </script>
- 
-</body>
 </html> 

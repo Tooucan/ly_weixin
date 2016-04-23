@@ -17,6 +17,7 @@
         <script src="../js/frozen.js"></script>        
         <script src="../js/jquery.min.js"></script>
         <script src="../js/base.js"></script>
+        <script src="../js/uuid-and-token.js"></script>
         <script src="../js/jquery.rotate.min.js"></script>
         <script src="../js/kalendae.standalone.js" charset="utf-8"></script>
         
@@ -310,11 +311,6 @@
             $(".closed").text("已约");
             $(".k-today").text("今天");
         };
-    //点击out-of-month 跳转下一个月   
- /*   $('.k-out-of-month').click(function(){
-        $('.k-btn-next-month').attr('id',"test");
-        document.getElementById("test").click()
-    })*/
 
     
     </script>
@@ -340,6 +336,7 @@
             var pay_v = document.orderForm.pay.value; 
             var deptId = $(".ly-deptName").find("option:checked").attr("id");
             var phone = /^0?1[3|4|5|8][0-9]\d{8}$/;//验证手机号 
+            hasUuid();//检查本地磁盘是否有uuid，没有去重新申请，有则直接获取token            
 
             if (contactsName_v!=="" && contactsPhone_v!=="" && phone.test(contactsPhone_v) && pay_v!=="" && selcetedDays.length !== 0){
                 //弹出信息
@@ -354,10 +351,10 @@
                 $("#days").html(selcetedDays.length);
                 $("#price").html(price*selcetedDays.length+"元");
 
-                //填入其他数据
-                $("#token").val("44B03F38143B4407901D69E96524FEC9");
-                $("#user_uuid_type").val("IMEI");
-                $("#user_uuid").val("123456789101112");
+                //填入其他数据                
+                $("#token").val(access_token);
+                $("#user_uuid_type").val("oa_user_uuid");
+                $("#user_uuid").val(uuid);
                 $("#hospitalId").val(hospitalId);
                 $("#serviceId").val(serviceId);
                 $("#deptId").val(deptId);
@@ -403,7 +400,7 @@
                 document.getElementById('selectedDays').value = arr;//将获得的值赋值给input
             };
         };        
-        function go(){
+        function go(){            
             var url = url_hostName+"/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/order_new?ver=v1.0.3";
            /* document.orderForm.action = url;*/
             
@@ -411,12 +408,11 @@
             $.post( url, $("#orderForm").serialize(), function(data) { 
                 tt =  eval('(' + data + ')');
                 status = tt.status;
-                console.log(status)
                 if (status == 0) {
                      window.location.href='ly-notice-success.html';// 提交成功后跳转
                 } 
                 else if(status == 1){
-                    alert("令牌失效!")
+                    alert("令牌失效!")                    
                 }
                 else if(status == 2){
                     alert("令牌、uuid校验错误!")

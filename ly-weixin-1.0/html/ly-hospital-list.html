@@ -17,6 +17,7 @@
         <script src="../js/iscroll.js"></script>
         <script src="../js/iscroll-probe.js"></script>
         <script src="../js/base.js"></script>
+        <script src="../js/uuid-and-token.js"></script>     
         
         
   
@@ -435,14 +436,15 @@ function getLatAndLng(status){
 function getHospitalData(){
 	console.log("getHospitalData") 
     //请求医院数据
-    lng = getCookie("lng");
-    lat = getCookie("lat");
+    lng = getCookie("lng")?getCookie("lng"):"";
+    lat = getCookie("lat")?getCookie("lat"):"";
+    console.log(lng)
     hospitals_url = url_hostName+"/api/android/chengdu/hospitals?ver=v1.0.3&lng="+lng+"&lat="+lat+"";
     var hospital_list = $.ajax({
             url: hospitals_url,
             type: "GET",           
             dataType: "json", 
-            async:false,               
+            async:false,
             success: function(data) { 
                 var tt = eval(data).hospitals; 
                 if  (tt.length !== 0) { 
@@ -967,8 +969,6 @@ var isFree;
     /*var isFree = sortRuleId == 7 ? 1 : 0;*/   
     if (sortRuleId == 7) {isFree = 1;sortRuleId = 0} else {isFree = 0};
 
-
-
 </script>
 
 <script>
@@ -977,42 +977,6 @@ $('.ui-list li,.ui-tiled li').click(function(){
         location.href= $(this).data('href');
     }
 });
-</script>
-<script type="text/javascript">
-/**
- *CreateFile: 测试在电脑上创建一个文件件，并在文件夹里写进一些数据。
- *
- */
-function CreateFile()
-{
-    console.log("ok")
-   var fso, tf;
-   fso = new ActiveXObject("Scripting.FileSystemObject");//获取对象
-   tf = fso.CreateTextFile("test.txt", true);//创建一个文件夹
-   // 写一行，并且带有新行字符。
-   tf.WriteLine("Testing 1, 2, 3.") ;
-   // 向文件写三个新行字符。  
-   tf.WriteBlankLines(3) ;
-   // 写一行。
-   tf.Write ("This is a test.");
-   console.log("write ok")
-   tf.Close();//关闭
-}
-/**
- *Folder的API：
- *任务 方法 
- *创建文件夹。 FileSystemObject.CreateFolder 
- *删除文件夹。 Folder.Delete 或 FileSystemObject.DeleteFolder 
- *移动文件夹。 Folder.Move 或 FileSystemObject.MoveFolder 
- *复制文件夹。 Folder.Copy 或 FileSystemObject.CopyFolder 
- *检索文件夹的名字。 Folder.Name 
- *如果文件夹在驱动器上存在，则找出它。 FileSystemObject.FolderExists 
- *获得现有 Folder 对象的实例。 FileSystemObject.GetFolder 
- *找出文件夹的父文件夹名。 FileSystemObject.GetParentFolderName 
- *找出系统文件夹的路径。 FileSystemObject.GetSpecialFolder 
- */
-CreateFile();
-alert("Ok! Write Over!");
 </script>
 </body>
 </html> 

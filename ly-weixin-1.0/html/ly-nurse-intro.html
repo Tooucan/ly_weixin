@@ -115,7 +115,7 @@
                 <div id="scroller">
                     <ul class="ly-comments ui-list ui-list-pure">                                
                     </ul>
-                    <div class="viewMore" onclick="viewMore()"><i class="ui-loading" style="display: none;"></i><p>查看更多</p></div>
+                    <div class="viewMore" onclick="viewMore()" style="display: none;"><i class="ui-loading" style="display: none;"></i><p>查看更多</p></div>
                 </div>
             </div>
         </div>
@@ -241,10 +241,12 @@
         success: function(data) { 
             $("#ly-comments-num").html(eval(data).page.totalcount+"条");     
             var tt = eval(data).comments;
-            t_len = tt.length;            
-            if (tt.length !== 0) {  
+            t_len = tt.length;
+            //若数据多于10条，显示查看更多
+            if (t_len > 10 ) { $(".viewMore").show(); } 
+            if (t_len !== 0) {  
             //循环ul下的li，并填写数据                
-            for (var i = 0; i < tt.length ; i++) {
+            for (var i = 0; i < t_len ; i++) {
                 $(".ly-comments").append(
                 "<li class='ui-border-t'>"
                     +"<h5><span>" + tt[i].customer_phone + "</span>"
@@ -264,7 +266,7 @@
                if (page == 1) {
                         $(".ly-comments").empty();//清空  
                         $(".ly-comments").append("<p class='data-error'>暂时还没有任何评论！</p>");
-                        $(".viewMore").hide();//清空  
+                        $(".viewMore").hide(); 
                     };              
                 }           
                 },

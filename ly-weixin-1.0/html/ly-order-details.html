@@ -12,6 +12,7 @@
     <script src="../js/frozen.js"></script>        
     <script src="../js/jquery.min.js"></script>
     <script src="../js/base.js"></script>
+    <script src="../js/uuid-and-token.js"></script>
 
 	<title>订单详情</title>
 
@@ -185,6 +186,7 @@
     var r = window.location.search.substr(1).match(reg);//获取当前页面url中？后面的字段
     if (r!=null) return (r[2]); return null;
     }
+    hasUuid();//检查本地磁盘是否有uuid，没有去重新申请，有则直接获取token
     var code = GetQueryString("code");
     var ly_state = "";
         //订单详情数据请求
@@ -192,25 +194,26 @@
             url: url_hostName +"/api/weixin/chengdu/user/my_order/"+ code +"/detail?ver=v1.0.3",
             type: "POST",
             data: {
-                token        : '44B03F38143B4407901D69E96524FEC9',
-                user_uuid_type : 'IMEI',
-                user_uuid    : '123456789101112',
+                user_uuid_type : "oa_user_uuid",
+                user_uuid    : uuid,
+                token        : access_token,
             },
             dataType: "json",
             contentType: "application/x-www-form-urlencoded",
             success: function(data) { 
-                    var tt = eval(data).order;                    
+                    var tt = eval(data).order; 
+                    console.log(tt)                   
                     var o_code = tt.order_status_code;
                      if (o_code == 1 || o_code == 2 ) {
                         tt.next = "取消订单";
                         $(".ly-order-next").click(function(){
                             timedCount();//倒计时提醒 
                           })
-                       } 
+                       }
                        else if(o_code == 13 || o_code == 14 || o_code == 15 || o_code == 16 ){
                         tt.next = "去评价";
                         $(".ly-order-next").click(function(){
-                            window.location.href = "ly-evaluate.html?code="+tt[i].code+"&id="+ tt[i].sp_id+"";
+                            window.location.href = "ly-evaluate.html?code="+tt.code+"&id="+ tt.sp_id+"";
                             });
                         }
                         else {
@@ -282,7 +285,7 @@
                        $(".ly-category-name").text(tt.category_name);
                        $(".ly-rsv-dates").text(tt.rsv_dates);
                        $(".ly-stm-dates").text(tt.stm_dates);
-                       $(".ly-order-statement").text("￥"+ tt.unit_price + " " + tt.unit +" X "+tt.stm_num+" 天  = "+tt.rsv_payment+" 元" );
+                       $(".ly-order-statement").text("￥"+ tt.unit_price + " " + tt.unit +" X "+tt.stm_num+" 天  = "+ tt.unit_price*tt.stm_num+" 元" );
                        $(".ly-real-payment").text(tt.real_payment + "元");
                        $(".ly-paymentMethod").text(toChinese(tt.paymentMethod));
                        $(".ly-create-time").text(tt.create_time);
@@ -291,8 +294,11 @@
                        //若未付款，实际支付显示为“未付款”
                        if (tt.real_payment == "" || tt.real_payment == undefined) {$(".ly-real-payment").text("未付款");} 
 
-                       //若还未结算订单，服务时间显示为“尚未开始服务”
-                       if (tt.stm_dates == "" || tt.stm_dates == undefined) {$(".ly-stm-dates").text("尚未开始服务");}
+                       //若还未结算订单，服务时间显示为“订单未结算”
+                       if (tt.stm_dates == "" || tt.stm_dates == undefined) {$(".ly-stm-dates").text("订单尚未结算");}
+
+                       //若还未结算订单，订单结算显示为“未结算”
+                       if (tt.stm_num == "0.0" || tt.stm_num == undefined) {$(".ly-order-statement").text("未结算");}
 
                        //展开预约时间
                        $(".ly-rsv-dates").click(function(){
@@ -302,7 +308,7 @@
                        //展开服务时间
                        $(".ly-stm-dates").click(function(){
                             $(".ly-modal-4").addClass("show")
-                            if (tt.stm_dates == "" || tt.stm_dates == undefined) {$("#stm_dates").html("该订单尚未开始服务") } else {$("#stm_dates").html(f_date(tt.stm_dates))}
+                            if (tt.stm_dates == "" || tt.stm_dates == undefined) {$("#stm_dates").html("该订单尚未结算，还不能看到服务时间") } else {$("#stm_dates").html(f_date(tt.stm_dates))}
                                            
                        });
 
@@ -362,9 +368,9 @@ function orderCancel(){
             url: url_hostName+"/api/weixin/chengdu/user/my_order/"+ code +"/operation/cancel?ver=v1.0.3",
             type: "POST",
             data: {
-                token        : '44B03F38143B4407901D69E96524FEC9',
-                user_uuid_type : 'IMEI',
-                user_uuid    : '123456789101112',
+                token        : access_token,
+                user_uuid_type : "oa_user_uuid",
+                user_uuid    : uuid,
             },
             dataType: "json",
             contentType: "application/x-www-form-urlencoded",

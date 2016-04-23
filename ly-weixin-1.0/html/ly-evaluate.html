@@ -10,6 +10,7 @@
     <script src="../js/frozen.js"></script>        
     <script src="../js/jquery.min.js"></script>
     <script src="../js/base.js"></script>
+    <script src="../js/uuid-and-token.js"></script>
     <!-- 星级评分 -->   
     <link rel="stylesheet" href="../css/css-stars.css">
     <script src="../js/jquery.barrating.js"></script>
@@ -158,6 +159,7 @@
     var r = window.location.search.substr(1).match(reg);//获取当前页面url中？后面的字段
     if (r!=null) return (r[2]); return null;
     }
+    hasUuid();//检查本地磁盘是否有uuid，没有去重新申请，有则直接获取token
     var code = GetQueryString("code");
     var id = GetQueryString("id");
     $.ajax({
@@ -229,9 +231,9 @@ function loopStars(){
 
         function go(){
             //填入其他数据
-            $("#token").val("44B03F38143B4407901D69E96524FEC9");
-            $("#user_uuid_type").val("IMEI");
-            $("#user_uuid").val("123456789101112");
+            $("#token").val(access_token);
+            $("#user_uuid_type").val("oa_user_uuid");
+            $("#user_uuid").val(uuid);
             var url = url_hostName+"/api/weixin/chengdu/user/my_order/"+ code +"/operation/comment?ver=v1.0.3  ";
             document.evaluate.action = url;
             document.evaluate.submit();
@@ -239,6 +241,7 @@ function loopStars(){
             //改用post提交，获取返回值
             $.post( url, $("#evaluate").serialize(), function(data){
                         tt =  eval('(' + data + ')');
+                        console.log(tt)
                         status = tt.status;
 
                         if (status == 0) {
@@ -259,8 +262,7 @@ function loopStars(){
                         else {
                             alert("其他未知错误!")
                         }
-                });             
-            
+                });
         };
 
     </script>

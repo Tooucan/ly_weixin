@@ -140,7 +140,7 @@
          <i class="ui-dialog-close" data-role="button"></i>
         <div class="ui-dialog-bd">
             <h4>取消订单中···</h4>
-            <div class="ly-intro-l ly-intro-center">您的订单 <span class="ui-txt-red" id="count_time">5</span> 秒后将被自动取消!</div>
+            <div class="ly-intro-l ly-intro-center">您的订单 <span class="ui-txt-red" id="count_time">3</span> 秒后将被自动取消!</div>
         </div>
         <div class="ui-dialog-ft">                        
             <button  type="button" data-role="button">不，稍等一下</button>
@@ -347,20 +347,19 @@ function timedCount(){
     //倒计时
     var time = 3;
     document.getElementById('count_time').innerHTML= time;
-    time -= 1; 
+    time -= 1
     timer = setInterval(function(){
+        document.getElementById('count_time').innerHTML= time;
         if (time == 0) {
-                orderCancel();//取消订单
-                $(".ui-dialog").removeClass("show");                
+                $(".ui-dialog").removeClass("show");
+                orderCancel();//取消订单                
                 clearInterval(timer);//停止
                 time=3;
-            } else {
-                document.getElementById('count_time').innerHTML= time;
+            } else { 
                 time--;
-        }
-    },1000);  
+            }
+    },1000); 
 }
-
 //取消订单
 function orderCancel(){
 
@@ -377,24 +376,15 @@ function orderCancel(){
             success: function(data) { 
                 tt =  eval(data);                
                 status = tt.status;
-                if (status == 0) {
+                message = tt.message;                   
+                console.log(tt)
+                if (status == 0) {                    
                     $(".ly-modal-1").addClass("show");// 取消成功后弹出
-                } 
-                else if(status == 1){
-                    alert("令牌失效!")
-                }
-                else if(status == 2){
-                    alert("令牌、uuid校验错误!")
-                }
-                else if(status == 3){
-                    alert("选择的日期被占用!")
-                }
-                else if(status == 4){
-                    alert("该账户已经被停用!")
+                    //alert("订单取消成功")           
                 }
                 else {
-                    alert("其他未知错误!")
-                }   
+                    alert(message)
+                }
             },  
             error: function() {
                    alert ("链接错误！")

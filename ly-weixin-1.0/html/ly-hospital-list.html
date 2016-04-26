@@ -149,6 +149,10 @@
             height: 57px;
             z-index: 80;
         }
+        .ly-hos-dis {
+            font-size: 12px;
+            margin-left: 8px;
+        }
         .nav {
             width:25%;
             height:16px;
@@ -166,8 +170,8 @@
             white-space: nowrap;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            text-align: right;
-            padding-right: 24px;
+            text-align: center;
+            padding-right: 16px;
             position: relative;
         }
         .set:after {
@@ -178,7 +182,7 @@
             background:url(..//img/ic_text_unflod.png) no-repeat;
             background-size: cover;
             position: absolute;
-            right: 12px;
+            right: 6px;
             bottom: 0; 
         }
         .select:after {
@@ -189,25 +193,35 @@
             background:url(..//img/ic_text_flod.png) no-repeat;
             background-size: cover;
             position: absolute;
-            right: 12px;
+            right: 6px;
             bottom: 0;
         }
         .new {
-            width:100%;
-            background: #f6f6f6;
-            position:absolute;
-            display:none;
+            display: none;
+            position: fixed;
+            width: 100%;            
             z-index: 82;
-            top: 56px;
-            left: 0;
+            top: 57px;
+            left: 0;            
         }
         .nav ul li {
-            line-height:32px;
+            line-height:40px;
             padding-left:10px;
+            background: #f6f6f6;
         }        
         .nav ul li:active,
         .nav ul li:hover {
             background:#eee;            
+        }
+        .bg-shady {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            top: 57px;
+            left: 0;
+            background: rgba(0, 0, 0, 0.4);
         }
 
         /* 弹出modal */
@@ -292,40 +306,40 @@
 <section class="ly-nurse-container ui-container">
 
 <div class="ly-nurse-filter ui-border-b">
-<div class="nav" id="nav">
+<div class="nav" id="nav" style="width: 36%;">
     <p id="hospital_sel" class="set">默认医院</p>
-    <ul id = "hospitals" class="hospitals new"> 
-   
-    </ul>
+    <ul id = "hospitals" class="new">
+    </ul>    
 </div>
-<div class="nav" id="nav">
+<div class="nav" id="nav" style="width: 21%;">
     <p id="skill_sel" class="set">不限技能</p>
     <ul id = "skills" class="new">
-   <li id="0" class="selected">不限技能</li>     
-    </ul>
+   <li id="0" class="ui-border-b selected"><span>不限技能</span></li>     
+    </ul>    
 </div>
-<div class="nav" id="nav">
+<div class="nav" id="nav" style="width: 21%;">
     <p id="age_sel" class="set">不限年龄</p>
     <ul id = "ages" class="new">
-    <li id="0-0" class="selected">不限年龄</li>  
-   <li id="20-29">20-29</li>
-   <li id="30-39">30-39</li>
-   <li id="40-99">40以上</li>
-   
-    </ul>
+    <li id="0-0" class="ui-border-b selected"><span>不限年龄</span></li>  
+   <li id="20-29" class= 'ui-border-b'><span>20-29</span></li>
+   <li id="30-39" class= 'ui-border-b'><span>30-39</span></li>
+   <li id="40-99"class= 'ui-border-b'><span>40以上</span></li>   
+    </ul>  
 </div>
-<div class="nav" id="nav">
+<div class="nav" id="nav" style="width: 21%;">
     <p id="sort_sel" class="set">默认排序</p>
     <ul id = "sort" class="new">
-    <li id="0" class="selected">默认排序</li>  
-   <!-- <li id="1">距离最近</li>
-   <li id="2">评分最高</li> -->
-   <li id="3">好评优先</li>
-   <!-- <li id="4">单数最多</li> -->
-   <li id="5">护龄最长</li>
-   <li id="6">价格最低</li> 
+    <li id="0" class= 'ui-border-b selected'><span>默认排序</span></li>  
+   <!-- <li id="1" class= 'ui-border-b'><span>距离最近</span></li>
+   <li id="2" class= 'ui-border-b'><span>评分最高</span></li> -->
+   <li id="3" class= 'ui-border-b'><span>好评优先</span></li>
+   <!-- <li id="4" class= 'ui-border-b'><span>单数最多</span></li> -->
+   <li id="5" class= 'ui-border-b'><span>护龄最长</span></li>
+   <li id="6" class= 'ui-border-b'><span>价格最低</span></li> 
     </ul>
+    
 </div>
+<div class="bg-shady"></div><!-- 黑幕 -->
 <div class="clear"></div>      
 </div>
 <div class="ly-modal-1 ui-dialog">
@@ -410,8 +424,8 @@ function getLatAndLng(status){
     function getPositionError(error) {
     	console.log("getPositionError") 
     	//设置默认地址
-        addCookie("lng",'104.065911',0.2);
-        addCookie("lat",'30.657384',0.2);
+        addCookie("lng",'104.065911',0);
+        addCookie("lat",'30.657384',0);
         switch (error.code) {
             case error.TIMEOUT:
                 alert("连接超时，请重试"); 
@@ -438,7 +452,6 @@ function getHospitalData(){
     //请求医院数据
     lng = getCookie("lng")?getCookie("lng"):"";
     lat = getCookie("lat")?getCookie("lat"):"";
-    console.log(lng)
     hospitals_url = url_hostName+"/api/android/chengdu/hospitals?ver=v1.0.3&lng="+lng+"&lat="+lat+"";
     var hospital_list = $.ajax({
             url: hospitals_url,
@@ -450,14 +463,25 @@ function getHospitalData(){
                 if  (tt.length !== 0) { 
                 //循环ul下的li，并填写数据                    
                 for (var i = 0; i < tt.length ; i++) {
-                    $("#hospitals").append( "<li id="+ tt[i].id +">"+tt[i].name+"</li>" );                        
-                    }                    
-                    var hospitalName_f =  tt[0].name;
-                    var hospitalId_f =  tt[0].id;          
-                    $(".hos-sel").html(hospitalName_f);//替换modal文本                    
-                    $("#hospitals").find("li").eq(0).addClass("selected");//默认选择第一个医院
-                    addCookie("hospitalName",hospitalName_f,0);//设置cookie
-                    addCookie("hospitalId",hospitalId_f,0);//设置cookie                                        
+
+                    var hos_dis = tt[i].dis > 1000 ?  (tt[i].dis/1000).toFixed(1) +" km" :  tt[i].dis +" m" ;  //检查各医院距离是否大于1000m，是则转换话x.xxkm
+
+                    $("#hospitals").append( "<li id="+ tt[i].id +" class= 'ui-border-b'><span>"+tt[i].name+" </span><i class='ly-hos-dis ui-txt-info'> "+hos_dis+" </i> </li>" );                        
+                    }                     
+                    
+                    hospitalId = getCookie("hospitalId");
+                    hospitalName = getCookie("hospitalName");
+                    console.log(hospitalId)
+                    if (hospitalId == "" || hospitalId == null || hospitalId == 'undefined' && hospitalName == "" || hospitalName == null || hospitalName == 'undefined') { 
+                        var hospitalName_f =  tt[0].name;
+                        var hospitalId_f =  tt[0].id; 
+                        $(".hos-sel").html(hospitalName_f);//替换modal文本                    
+                        $("#hospitals").find("li").eq(0).addClass("selected");//默认选择第一个医院
+                        addCookie("hospitalName",hospitalName_f,0);//设置cookie
+                        addCookie("hospitalId",hospitalId_f,0);//设置cookie
+                    } else {                      
+                        $("#hospitals li").filter("#"+hospitalId+"").addClass("selected");//选择已有的医院
+                    }
                 }
             },
             error: function() {
@@ -480,7 +504,7 @@ function getSkillData(){
                 if  (tt.length !== 0) { 
                 //循环ul下的li，并填写数据                    
                 for (var i = 0; i < tt.length ; i++) {
-                    $("#skills").append( "<li id="+ tt[i].id +">"+tt[i].name+"</li>" );                        
+                    $("#skills").append( "<li id="+ tt[i].id +" class= 'ui-border-b'><span>"+tt[i].name+" </span></li>" );                        
                     skillType = tt[i].typeName;
                     }
                 }                                 
@@ -495,42 +519,50 @@ function getSkillData(){
 
 function filteringBar(){
 	     console.log("filteringBar") 
+         hospitalName = unescape($("#hospitals li").filter(".selected").find('span').text());
         //替换文本
-        $("#hospital_sel").html( $("#hospitals li").first().html());
+        $("#hospital_sel").html(hospitalName);
                         
         //展开或隐藏list
-        $(".nav p").click(function(){                    
+        $(".nav p").click(function(){
             var ul = $(this).next();
-            if(ul.css("display")=="none"){
-                $(".nav ul").slideUp(400);                       
-                ul.slideDown(150);
-            }else{                        
-                ul.slideUp(150);                        
+            if($(".bg-shady").css("display")=="none"){
+                $(".bg-shady").show();
+                ul.slideDown(200);
+            }else{
+                if (ul.css("display")=="none") {
+                    $(".nav ul").slideUp(200);
+                    ul.slideDown(200);
+                }
+                else {                
+                    ul.slideUp(200);
+                    $(".bg-shady").hide();
+                }
             }
-        });
+        }); 
         //替换下拉图标class
-        $(".set").click(function(){
-            var _name = $(this).attr("name");
-            if( $("[name="+_name+"]").length > 1 ){
-                $("[name="+_name+"]").removeClass("select");
-                $(this).addClass("select");
-            } else {
+        $(".set").click(function(){                    
                 if( $(this).hasClass("select") ){
                     $(this).removeClass("select");
                 } else {
                     $(this).addClass("select");
-                }
-            }
-        });
+                }                    
+        }); 
         //替换p中的内容
         $("#nav li").click(function(){
-            var li=$(this).text();
-            $(this).parent().prev().html(li);
+            var li=$(this).find('span').text();
+            $(this).parent().prev().text(li);
             $(this).siblings().removeClass("selected");
             $(this).addClass("selected");
             listRefresh();//刷新内容
             $(".new").hide();
-        });        
+            $(".bg-shady").hide();
+        });
+        //点击黑幕隐藏
+        $(".bg-shady").click(function(){
+            $(".bg-shady").hide();
+            $(".nav ul").slideUp(200);
+        });
  }
 function listRefresh(){
 	console.log("listRefresh") 
@@ -539,8 +571,10 @@ function listRefresh(){
     skillId = $("#skills").find("li").filter(".selected").attr("id");
     ageId = $("#ages").find("li.selected").attr("id");
     sortRuleId = $("#sort").find("li.selected").attr("id");
-    hospitalName= escape($("#hospitals").find("li").filter(".selected").html());
-         
+    hospitalName= escape($("#hospitals li").filter(".selected").find('span').text());
+    console.log(hospitalId)
+    addCookie("hospitalName",hospitalName)
+    addCookie("hospitalId",hospitalId)
     //get护理员列表data        
     $.ajax({
         url: url_hostName+"/api/weixin/chengdu/hospital_care/service_providers/list/1?ver=v1.0.3",
@@ -611,10 +645,10 @@ function listRefresh(){
                         +
                         "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
                         +
-                        "</li>");
+                        "</li>");                        
+                        } 
                         myScroll.refresh();//获取数据后刷新iscroll
                         loopStars();
-                        } 
                     }
                 else {
                     $(".ly-nurse-list").empty();//清空
@@ -701,7 +735,8 @@ function pullDownAction() {
                     +
                     "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
                     +
-                    "</li>") ;
+                    "</li>") ;                    
+                    }
                     loopStars();
                     myScroll.refresh();
                     setTimeout(function(){
@@ -727,9 +762,7 @@ function pullDownAction() {
                     },400);//当前已是最新提示..
                     setTimeout(function(){
                         $(".noNew").hide();
-                    },2000)
-                    }
-                    
+                    },2000)                    
             },
             error: function() {
                 alert ("链接错误！")
@@ -810,11 +843,11 @@ function pullUpAction() {
                             +
                             "<div class='ly-price ui-txt-red'><span class='ly-price-num' id='price'>" + tt[i].price + "</span>元/天</div>"
                             +
-                            "</li>");
+                            "</li>");                            
+                            }
                             myScroll.scrollBy(0, -480, 1000);//从当前位置向下滚动480px
                             myScroll.refresh();//获取数据后刷新iscroll
                             loopStars();
-                            } 
                         }
                     else {
                             myScroll.refresh();
@@ -836,11 +869,11 @@ function pullUpAction() {
         }, 100);  
     };
 //初始化iScroll控件
-function loaded () {            
+function loaded () {   
 myScroll = new IScroll('#wrapper', { 
     probeType: 3,
     preventDefault: true,
-    topOffset: pullDownOffset,        
+    topOffset: pullDownOffset,
     useTransition: false,                
     scrollbars: true,//有滚动条  
     mouseWheel: true,//允许滑轮滚动  
@@ -941,18 +974,14 @@ function closeDialog() {
 	    $(".ui-dialog").removeClass("show");
 	}); 
 }
-function getOpenId(){
 
-}
 var hospitalId,skillId,notBusyToday,ageId,nurseAge,sortRuleId;
 c_lng = getCookie("lng");
 c_lat = getCookie("lat");
-hospitalId = getCookie("hospitalId");
-hospitalName = getCookie("hospitalName");
 //判断有无cookiee，无则加载，有则直接拉取医院列表
 if (c_lng == "" || c_lng == null || c_lat == "" || c_lat == null) {
     getLatAndLng();
-} else {getHospitalData();getSkillData();filteringBar();listRefresh();}
+} else  {getHospitalData();getSkillData();filteringBar();listRefresh();}
 
 var myScroll;
 var page = 1;

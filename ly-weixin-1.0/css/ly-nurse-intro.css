@@ -141,6 +141,7 @@ right: 8%;
 .ly-nurse-intro {
     background: #fff;
     padding-top: 8px;
+    padding-bottom: 8px;
 }
 .ly-nurse-intro p span{
     color: #81C399;  
@@ -198,7 +199,7 @@ right: 8%;
 }
 .ly-price {
     font-size: 13px; 
-    margin-right: 14px;           
+    margin-right: 6px;           
 }
 .ly-intro,
 .ly-price-r {
@@ -215,7 +216,7 @@ right: 8%;
     background-size: cover;
     position: absolute;
     bottom: 2px;
-    right: 0;
+    right: -8px;
     
 }
 .ly-service-intro {

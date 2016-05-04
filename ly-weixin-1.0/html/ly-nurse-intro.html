@@ -248,8 +248,9 @@
         dataType: "json",
         contentType: "text/plain",
         success: function(data) { 
-            $("#ly-comments-num").html(eval(data).page.totalcount+"条");     
+            $("#ly-comments-num").html(eval(data).page.totalcount+"条"); 
             var tt = eval(data).comments;
+            console.log(tt)
             t_len = tt.length;
             //若数据多于10条，显示查看更多
             if (t_len > 10 ) { $(".viewMore").show(); } 

@@ -13,6 +13,8 @@
 }
 .ly-intro-center {
     text-align: center;
+    max-height: 300px;
+    overflow: auto;
 }
 .ly-red {
     color: #e2574d;

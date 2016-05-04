@@ -20,9 +20,7 @@
 
 </head>
 <style>
-    .ly-nurse-list {
-            margin-top: 46px;
-        }
+       
     .ly-nurse-info-data {
         margin-top: 8px;
 
@@ -124,7 +122,7 @@
                     <option value=""></option> <!-- 初始为空 -->
                     <option value="1" data-html=" 很不满意 " >服务质量太差，态度不友好</option>
                     <option value="2" data-html=" 不满意 " >态度不友好，不够耐心</option>
-                    <option value="3" data-html=" 一般 " >服务质量还行，不爱说话</option>
+                    <option value="3" data-html=" 一般 " >服务质量一般</option>
                     <option value="4" data-html=" 满意 " >服务很好，很耐心</option>
                     <option value="5" data-html=" 非常满意 " >服务非常好，非常贴心</option>
                 </select>
@@ -162,6 +160,8 @@
     hasUuid();//检查本地磁盘是否有uuid，没有去重新申请，有则直接获取token
     var code = GetQueryString("code");
     var id = GetQueryString("id");
+    hospitalId = getCookie("hospitalId");
+    hospitalName = getCookie("hospitalName");
     $.ajax({
             url: url_hostName+"/api/weixin/chengdu/hospital_care/service_provider/"+ id +"/info?ver=v1.0.3 ",
             type: "get",
@@ -219,7 +219,8 @@ function loopStars(){
                             )
                         };  
     }
-        $(document).ready(function(){         
+        $(document).ready(function(){
+            $(".br-current-rating-text").html("请选择星级"); 
             //当被点击时获取option的text
             $("#example-css").change(function(){
                 var checktext = $("#example-css option:selected").html();                              
@@ -234,33 +235,19 @@ function loopStars(){
             $("#token").val(access_token);
             $("#user_uuid_type").val("oa_user_uuid");
             $("#user_uuid").val(uuid);
-            var url = url_hostName+"/api/weixin/chengdu/user/my_order/"+ code +"/operation/comment?ver=v1.0.3  ";
-            document.evaluate.action = url;
-            document.evaluate.submit();
-
+            var url = url_hostName+"/api/weixin/chengdu/user/my_order/"+ code +"/operation/comment?ver=v1.0.3  ";           
+            
             //改用post提交，获取返回值
             $.post( url, $("#evaluate").serialize(), function(data){
-                        tt =  eval('(' + data + ')');
-                        console.log(tt)
-                        status = tt.status;
-
+                        tt =  eval('(' + data + ')');                        
+                        status = tt.status; 
                         if (status == 0) {
                              alert("提交成功！")
-                        } 
-                        else if(status == 1){
-                            alert("令牌失效!")
-                        }
-                        else if(status == 2){
-                            alert("令牌、uuid校验错误!")
-                        }
-                        else if(status == 3){
-                            alert("选择的日期被占用!")
-                        }
-                        else if(status == 4){
-                            alert("该账户已经被停用!")
-                        }
+                             document.evaluate.action = "ly-my-orders.html"
+                             //document.evaluate.action = "ly-nurse-intro.html?id="+ id +"&hospitalId="+ hospitalId +"&hospitalName="+ hospitalName;
+                        }                       
                         else {
-                            alert("其他未知错误!")
+                            alert(tt.message) 
                         }
                 });
         };

@@ -104,7 +104,10 @@
 
                 // append .br-current-rating div to the widget
                 if (self.options.showSelectedRating) {
-                    $w.append($('<div />', { 'text': '111', 'class': 'br-current-rating' }));                    
+                    $div = $('<div />', { 'text': '', 'class': 'br-current-rating' });
+                    $span = $('<span />', { 'class': 'br-current-rating-text' }); 
+                    $w.append($div.append($span));    
+                    //$w.append("<div class='br-current-rating'><span class='br-current-rating-text'></span></div> ");            
                 }
 
                 // additional classes for the widget
@@ -142,7 +145,7 @@
 
                 // update .br-current-rating div
                 if (self.options.showSelectedRating) {
-                    self.$elem.parent().find('.br-current-rating').text(text);
+                    self.$elem.parent().find('.br-current-rating span').text(text);
                 }
             };
 
@@ -177,7 +180,7 @@
                     if ($a.hasClass('br-current') && self.$elem.data('barrating').deselectable) {
                         $a.removeClass('br-selected br-current')[nextAllorPreviousAll()]()
                             .removeClass('br-selected br-current');
-                        value = ''; text = '';
+                        value = '请选择星级'; text = '请选择星级'; //默认为"请评论星级"                      
                     } else {
                         $all.removeClass('br-current');
                         $a.addClass('br-current');
@@ -220,9 +223,8 @@
             var attachMouseLeaveHandler = function($all, $widget) {
                 $widget.on({
                     mouseleave: function() {
-                        $all.removeClass('br-active');
-                        showSelectedRating();
-                        applyStyle($widget);
+                        $all.removeClass('br-active');                        
+                        applyStyle($widget);                       
                     }
                 });
             };
@@ -233,16 +235,15 @@
             var fastClicks = function($all) {
                 $all.on('touchstart', function(event) {
                     event.preventDefault();
-                    event.stopPropagation();
-
-                    $(this).click();
+                    event.stopPropagation();                                        
+                    $(this).click();                                        
                 });
             };
 
             // disable clicks
             var disableClicks = function($all) {
                 $all.on('click', function(event) {
-                    event.preventDefault();
+                    event.preventDefault();                                                           
                 });
             };
 
@@ -274,7 +275,7 @@
                 if (self.options.readonly) {
 
                     // do not react to click events if rating is read-only
-                    disableClicks($all);
+                    disableClicks($all);                    
 
                 } else {
 

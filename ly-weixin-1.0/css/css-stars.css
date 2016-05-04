@@ -39,3 +39,7 @@
   background-repeat: repeat-x;
   background-position: 0 57px;
 }
+.br-current-rating-text {
+  background-color: #fff;
+  padding: 8px;
+}
